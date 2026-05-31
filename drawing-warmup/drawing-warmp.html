@@ -10,19 +10,19 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0d0d0f;
-  --surface: #141416;
-  --surface2: #1c1c20;
-  --border: #272729;
-  --border2: #333337;
-  --accent: #e5a02a;
-  --accent2: #e1ff35;
+  --bg: #1e1e26;
+  --surface: #26262e;
+  --surface2: #2c2c38;
+  --border: #36363e;
+  --border2: #42424e;
+  --accent: #c8893a;
+  --accent2: #b8c442;
   --accent3: #47c4ff;
   --accent4: #c49dff;
-  --text: #eeede6;
-  --muted: #64646b;
-  --muted2: #9090a0;
-  --card: #131315;
+  --text: #e8e7e0;
+  --muted: #7a7a84;
+  --muted2: #a0a0ae;
+  --card: #222230;
 }
 
 html { scroll-behavior: smooth; }
@@ -231,7 +231,7 @@ h1 em { font-style: normal; color: var(--accent); }
   overflow: hidden;
 }
 .card-visual svg { width: 100%; height: 100%; }
-.card-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-visual img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.75; mix-blend-mode: luminosity; }
 
 .level-badge {
   position: absolute;
@@ -425,14 +425,12 @@ footer a:hover { color: var(--text); }
 <header>
   <a href="../index.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;margin-bottom:28px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Art Toolset Home</a>
   <div class="header-eyebrow">Drawing Practice Tool</div>
-  <h1>Drawing<br><em>Warmup</em></h1>
+  <h1>Drawing<em>Warmup</em></h1>
   <div class="header-meta">
     20 exercises from&nbsp;<a href="https://youtu.be/AyN8RawHIJQ" target="_blank" rel="noopener">"The only drawing exercise video you will ever need"</a><br>
     4 difficulty levels &mdash; Roll and practice before every drawing session.
   </div>
 </header>
-
-<div class="divider"></div>
 
 <div class="controls">
   <div class="ctrl-block">
