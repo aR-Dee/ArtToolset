@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drawing Warmup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d0d0f;
+  --surface: #141416;
+  --surface2: #1c1c20;
+  --border: #272729;
+  --border2: #333337;
+  --accent: #e5a02a;
+  --accent2: #e1ff35;
+  --accent3: #47c4ff;
+  --accent4: #c49dff;
+  --text: #eeede6;
+  --muted: #64646b;
+  --muted2: #9090a0;
+  --card: #131315;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 100px; position: relative; z-index: 1; }
+
+header { padding: 52px 0 44px; }
+
+.header-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin-bottom: 18px;
+}
+h1 em { font-style: normal; color: var(--accent); }
+
+.header-meta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.header-meta a { color: var(--muted2); text-decoration: none; border-bottom: 1px solid var(--border2); }
+.header-meta a:hover { color: var(--text); }
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, var(--border2) 0%, transparent 100%);
+  margin: 36px 0;
+}
+
+.controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.ctrl-block { display: flex; flex-direction: column; gap: 8px; }
+
+.ctrl-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+  height: 48px;
+}
+
+.step-btn {
+  width: 48px; height: 48px;
+  background: none;
+  border: none;
+  color: var(--muted2);
+  font-size: 22px;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-btn:hover { color: var(--accent); background: rgba(212,255,71,0.07); }
+
+.step-val {
+  width: 52px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  line-height: 48px;
+  user-select: none;
+}
+
+.roll-btn {
+  height: 48px;
+  padding: 0 40px;
+  background: var(--accent);
+  color: #0d0d0f;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+.roll-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,255,71,0.22); }
+.roll-btn:active { transform: translateY(0); box-shadow: none; }
+
+.all-btn {
+  height: 48px;
+  padding: 0 24px;
+  background: transparent;
+  color: var(--muted2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.all-btn:hover { color: var(--text); border-color: var(--muted); }
+
+#results { display: none; }
+#results.on { display: block; }
+
+.results-hdr {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.results-hdr h2 { font-size: 1rem; font-weight: 800; letter-spacing: 0.04em; }
+.results-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+.reroll-link {
+  margin-left: auto;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none; border: none;
+  padding: 0;
+}
+.reroll-link:hover { opacity: 0.7; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  animation: fadeUp 0.32s ease both;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-visual {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.card-visual svg { width: 100%; height: 100%; }
+.card-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.level-badge {
+  position: absolute;
+  top: 12px; left: 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 5px;
+  font-weight: 700;
+}
+.lv1 { background: rgba(212,255,71,0.12); color: var(--accent); }
+.lv2 { background: rgba(71,196,255,0.12); color: var(--accent3); }
+.lv3 { background: rgba(255,107,53,0.12); color: var(--accent2); }
+.lv4 { background: rgba(196,157,255,0.12); color: var(--accent4); }
+
+.ex-num {
+  position: absolute;
+  bottom: 12px; right: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.card-body { padding: 20px 22px 22px; }
+
+.card-name {
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.75;
+  color: var(--muted2);
+}
+
+.card-tip {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(212,255,71,0.05);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--muted2);
+  line-height: 1.65;
+}
+
+#all-section { display: none; margin-top: 60px; }
+#all-section.on { display: block; }
+
+.all-hdr {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.all-hdr h2 { font-size: 1.1rem; font-weight: 800; }
+
+.level-section { margin-bottom: 44px; }
+
+.level-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.level-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 18px;
+}
+
+.list-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.list-item:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+.list-visual {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.list-visual svg { width: 100%; height: 100%; }
+.list-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.list-body { padding: 16px 18px 20px; }
+
+.list-num {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.list-name {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+.list-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.list-trains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.list-train-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(238,237,230,0.06);
+  color: var(--muted2);
+  border: 1px solid var(--border2);
+}
+.list-note {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--muted2);
+  line-height: 1.6;
+  padding: 8px 12px;
+  background: rgba(212,255,71,0.04);
+  border-left: 2px solid var(--border2);
+  border-radius: 0 5px 5px 0;
+}
+
+footer {
+  margin-top: 80px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+footer a { color: var(--muted2); text-decoration: none; }
+footer a:hover { color: var(--text); }
+
+@media (max-width: 600px) {
+  h1 { font-size: 2.4rem; }
+  .controls { gap: 12px; }
+  .roll-btn { padding: 0 24px; }
+  .grid { grid-template-columns: 1fr; }
+  .list-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a href="../index.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;margin-bottom:28px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Art Toolset Home</a>
+  <div class="header-eyebrow">Drawing Practice Tool</div>
+  <h1>Drawing<br><em>Warmup</em></h1>
+  <div class="header-meta">
+    20 exercises from&nbsp;<a href="https://youtu.be/AyN8RawHIJQ" target="_blank" rel="noopener">"The only drawing exercise video you will ever need"</a><br>
+    4 difficulty levels &mdash; Roll and practice before every drawing session.
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<div class="controls">
+  <div class="ctrl-block">
+    <span class="ctrl-label">Number of exercises</span>
+    <div class="stepper">
+      <button class="step-btn" id="dec" aria-label="fewer">&#8722;</button>
+      <div class="step-val" id="count-disp">3</div>
+      <button class="step-btn" id="inc" aria-label="more">+</button>
+    </div>
+  </div>
+  <button class="roll-btn" id="roll-btn">&#x21AF; Roll</button>
+  <button class="all-btn" id="toggle-all">All exercises</button>
+</div>
+
+<section id="results">
+  <div class="results-hdr">
+    <h2>Today's warmup</h2>
+    <span class="results-tag" id="results-tag"></span>
+    <button class="reroll-link" id="reroll">&#x21BB; re-roll</button>
+  </div>
+  <div class="grid" id="cards-grid"></div>
+</section>
+
+<section id="all-section">
+  <div class="all-hdr">
+    <h2>All 20 exercises</h2>
+  </div>
+  <div id="all-list"></div>
+</section>
+
+<footer>
+  <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+  <span>Source: <a href="https://youtu.be/AyN8RawHIJQ" target="_blank" rel="noopener">youtu.be/AyN8RawHIJQ</a></span>
+  <span style="margin-left:auto"><a href="../index.html">← Art Toolset Home</a></span>
+</footer>
+
+</div>
+
+<script>
+// ─── IMAGE OVERRIDES ──────────────────────────────────────────────────────────
+// To replace an exercise's SVG with your own image, add an entry here:
+//   exerciseId: 'path/to/image.png'  OR  'https://example.com/image.jpg'
+// Leave empty ({}) to use the default SVGs for all exercises.
+const EXERCISE_IMAGES = {
+  1: 'images/1-writing.png',
+  2: 'images/2-lineStacks.png',
+  3: 'images/3-crircles-rotations.png',
+  4: 'images/4-squares-rotations.png',
+  5: 'images/5-ribbons.png',
+  6: 'images/6-shape-extrude.png',
+  7: 'images/7-symmetry.png',
+  8: 'images/8-shape-matching.png',
+  9: 'images/9-silhouette-matching.png',
+  10: 'images/10-perspective-symmetry.png',
+  11: 'images/11-cylinder-rotation.png',
+  12: 'images/12-box-rotation.png',
+  13: 'images/13-box-rotation-imagination.png',
+  14: 'images/14-box-storage-room.png',
+  15: 'images/15-box-slicing.png',
+  16: 'images/16-box-extrusions.png',
+  17: 'images/17-volume-bending.png',
+  18: 'images/18-bevelling.png',
+  19: 'images/19-3d-blobs.png',
+  20: 'images/20-combine-everything.png'
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
+const LEVELS = [
+  { id: 1, label: 'Level 1 — Hand Control & Line Confidence', color: 'lv1', colorVal: '#d4ff47' },
+  { id: 2, label: 'Level 2 — Observation & Visual Accuracy',  color: 'lv2', colorVal: '#47c4ff' },
+  { id: 3, label: 'Level 3 — Construction & Spatial Thinking', color: 'lv3', colorVal: '#ff6b35' },
+  { id: 4, label: 'Level 4 — Form Manipulation & Imagination', color: 'lv4', colorVal: '#c49dff' },
+];
+
+const EXERCISES = [
+  {
+    id: 1, level: 1,
+    name: 'Writing Warmup',
+    desc: 'Write letters, words, sentences, or your name slowly and cleanly. Activates precise pen control faster than anything else.',
+    tip: 'Do this right after turning on your tablet, especially after a break of several days.',
+    details: { trains: ['Fine motor control', 'Pen precision', 'Smooth pressure handling', 'Warm-up coordination'], note: 'Handwriting is already a highly refined movement system. It activates precise pen control fast.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <text x="22" y="55" font-family="Georgia,serif" font-size="28" fill="#d4ff47" opacity="0.9">Aa Bb Cc</text>
+      <text x="22" y="90" font-family="Georgia,serif" font-size="28" fill="#eeede6" opacity="0.5">Dd Ee Ff</text>
+      <text x="22" y="125" font-family="Georgia,serif" font-size="28" fill="#eeede6" opacity="0.22">Gg Hh Ii</text>
+      <text x="22" y="152" font-family="Space Mono,monospace" font-size="10" fill="#64646b">fine motor control</text>
+    </svg>`
+  },
+  {
+    id: 2, level: 1,
+    name: 'Line Stacks',
+    desc: 'Draw repeated parallel straight lines, then a series of curves. Even spacing. One fast committed stroke — no chicken-scratch corrections.',
+    tip: 'Wobble and drift is exactly what you\'re training to fix. Confront it directly.',
+    details: { trains: ['Line confidence', 'Shoulder movement', 'Stroke accuracy', 'Clean trajectories'], note: 'Common mistake: slowly "searching" for the line instead of committing to one fast stroke.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#d4ff47" stroke-width="1.5" stroke-linecap="round" opacity="0.85">
+        <line x1="24" y1="30" x2="178" y2="30"/>
+        <line x1="24" y1="46" x2="180" y2="46"/>
+        <line x1="24" y1="62" x2="177" y2="62"/>
+        <line x1="24" y1="78" x2="181" y2="78"/>
+        <line x1="24" y1="94" x2="178" y2="94"/>
+      </g>
+      <g stroke="#d4ff47" stroke-width="1.3" stroke-linecap="round" opacity="0.4" fill="none">
+        <path d="M 210 30 Q 242 20 268 30"/>
+        <path d="M 210 48 Q 243 38 268 48"/>
+        <path d="M 210 66 Q 241 56 267 66"/>
+        <path d="M 210 84 Q 242 74 267 84"/>
+      </g>
+      <text x="24" y="150" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">straight + curved · one stroke</text>
+    </svg>`
+  },
+  {
+    id: 3, level: 1,
+    name: 'Circles & Ellipses',
+    desc: 'Draw circles in one motion — visualize first, then commit. Then rotate them into ellipses at different angles.',
+    tip: 'This is the foundation of every cylinder you will ever draw.',
+    details: { trains: ['Smooth circular motion', 'Spatial rotation', 'Cylinder foundations', 'Perspective intuition'], note: 'Every cylinder, limb, cup, arm, neck, and finger starts from ellipse control.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="80" r="44" fill="none" stroke="#d4ff47" stroke-width="1.6" opacity="0.9"/>
+      <ellipse cx="170" cy="80" rx="44" ry="26" fill="none" stroke="#eeede6" stroke-width="1.4" opacity="0.6"/>
+      <ellipse cx="268" cy="80" rx="44" ry="11" fill="none" stroke="#eeede6" stroke-width="1.3" opacity="0.3"/>
+      <text x="24" y="150" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">circle → ellipse 60° → ellipse 80°</text>
+    </svg>`
+  },
+  {
+    id: 4, level: 1,
+    name: 'Rotating Squares',
+    desc: 'Draw a square, find its center with diagonals. Redraw it incrementally rotated all the way through 180°.',
+    tip: 'Foundation for boxes in any orientation — comes back in Level 3.',
+    details: { trains: ['Rotation awareness', 'Shape consistency', 'Early perspective thinking', 'Box construction basics'], note: 'Boxes are the foundation of construction drawing. This exercise plants the seed for everything in Level 3.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="18" y="48" width="58" height="58" stroke="#d4ff47" opacity="0.9"/>
+        <line x1="18" y1="48" x2="76" y2="106" stroke="#d4ff47" opacity="0.35" stroke-width="0.9"/>
+        <line x1="76" y1="48" x2="18" y2="106" stroke="#d4ff47" opacity="0.35" stroke-width="0.9"/>
+        <polygon points="120,48 165,60 168,112 123,100" stroke="#eeede6" opacity="0.6"/>
+        <polygon points="202,42 254,74 240,118 188,86" stroke="#eeede6" opacity="0.35"/>
+        <polygon points="278,46 306,82 280,116 252,80" stroke="#eeede6" opacity="0.18"/>
+      </g>
+      <text x="24" y="150" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">0° → 45° → 90° → 135° → 180°</text>
+    </svg>`
+  },
+  {
+    id: 5, level: 1,
+    name: 'Ribbon Forms',
+    desc: 'Draw a long ribbon twisting through 3D space. Start with a center flow line, duplicate with offset, connect the edges.',
+    tip: 'Training for hair, cloth, and organic forms. Harder than it looks.',
+    details: { trains: ['Flow', 'Organic movement', 'Surface orientation', 'Volume continuity'], note: 'Useful for hair, cloth, muscles, tentacles, and any organic form with a clear direction of travel.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 20 80 C 60 30, 100 38, 140 80 C 180 122, 220 112, 262 58" fill="none" stroke="#d4ff47" stroke-width="1.6" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 20 96 C 60 48, 100 55, 140 96 C 180 138, 220 126, 262 72" fill="none" stroke="#eeede6" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+      <line x1="140" y1="80" x2="140" y2="96" stroke="#eeede6" stroke-width="1" opacity="0.35"/>
+      <line x1="262" y1="58" x2="262" y2="72" stroke="#eeede6" stroke-width="1" opacity="0.35"/>
+      <text x="24" y="150" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">flow line + offset + close edges</text>
+    </svg>`
+  },
+  {
+    id: 6, level: 1,
+    name: 'Shape Extrusion',
+    desc: 'Draw any flat shape (a letter, symbol, silhouette) and extrude it into 3D — add depth and side walls.',
+    tip: 'Evolution of the ribbon. You\'re practising seeing a flat form as a 3D object.',
+    details: { trains: ['Depth construction', 'Perspective thickness', '2D → 3D thinking'], note: 'Use letters, symbols, or random silhouettes as your starting shape.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="100,28 132,112 116,112 108,88 92,88 84,112 68,112" stroke="#d4ff47" stroke-width="1.6" opacity="0.9"/>
+        <line x1="94" y1="76" x2="106" y2="76" stroke="#d4ff47" stroke-width="1.6" opacity="0.9"/>
+        <polygon points="132,112 150,94 150,20 118,20 100,28 132,28" stroke="#eeede6" stroke-width="1.2" opacity="0.4" fill="rgba(238,237,230,0.04)"/>
+        <line x1="132" y1="112" x2="150" y2="94" stroke="#eeede6" stroke-width="1.2" opacity="0.4"/>
+        <line x1="68" y1="112" x2="86" y2="94" stroke="#eeede6" stroke-width="0.9" opacity="0.28"/>
+        <line x1="100" y1="28" x2="118" y2="10" stroke="#eeede6" stroke-width="0.8" opacity="0.2" stroke-dasharray="3,3"/>
+      </g>
+      <text x="160" y="148" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">2D → 3D with depth</text>
+    </svg>`
+  },
+  {
+    id: 7, level: 2,
+    name: 'Symmetry Mirroring',
+    desc: 'Draw one half of a shape (mix of arcs and straight lines), then manually mirror it on the other side of the axis.',
+    tip: 'Trains both observation precision and hand control simultaneously.',
+    details: { trains: ['Proportion comparison', 'Angle sensitivity', 'Visual correction skills'], note: 'Hard truth: humans are surprisingly bad at symmetry until trained. This exposes the gap.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <line x1="160" y1="10" x2="160" y2="150" stroke="#272729" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <path d="M 155 28 C 108 28, 76 58, 88 102 C 94 122, 130 138, 155 132" fill="none" stroke="#47c4ff" stroke-width="1.6" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 165 28 C 212 28, 244 58, 232 102 C 226 122, 190 138, 165 132" fill="none" stroke="#47c4ff" stroke-width="1.4" stroke-linecap="round" opacity="0.45" stroke-dasharray="6,3"/>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">left side · axis · right side (mirror)</text>
+    </svg>`
+  },
+  {
+    id: 8, level: 2,
+    name: 'Shape Matching',
+    desc: 'Draw any random shape, then reproduce it as an identical duplicate right next to it — as accurately as possible.',
+    tip: 'Forces pure observation of proportions and contours.',
+    details: { trains: ['Shape memory', 'Observation accuracy', 'Relative proportions'], note: 'Focus on distances, curves, angles, and negative space — not just the outline.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 38 38 C 38 18, 80 18, 92 50 C 102 82, 82 132, 60 132 C 34 132, 22 100, 38 38 Z" fill="none" stroke="#47c4ff" stroke-width="1.6" opacity="0.9"/>
+      <path d="M 178 40 C 178 20, 220 20, 232 52 C 242 84, 222 134, 200 134 C 174 134, 162 102, 178 40 Z" fill="none" stroke="#47c4ff" stroke-width="1.4" opacity="0.45" stroke-dasharray="6,3"/>
+      <line x1="122" y1="80" x2="156" y2="80" stroke="#272729" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">original → duplicate beside it</text>
+    </svg>`
+  },
+  {
+    id: 9, level: 2,
+    name: 'Silhouette Drawing',
+    desc: 'Draw recognisable silhouettes from reference (figure, animal, vehicle) — only the outer contour, zero internal detail.',
+    tip: 'The form must read using only the outline. Best exercise for contour observation.',
+    details: { trains: ['Readability', 'Big shape recognition', 'Design clarity', 'Simplification'], note: 'If a silhouette reads well, the design usually works. No internal details allowed — subjects: characters, animals, vehicles, props.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="88" cy="30" rx="16" ry="19" fill="#47c4ff" opacity="0.65"/>
+      <path d="M 66 58 Q 56 48 60 80 L 64 122 L 78 122 L 83 88 L 93 88 L 98 122 L 112 122 L 116 80 Q 120 48 110 58 Q 98 50 78 50 Z" fill="#47c4ff" opacity="0.65"/>
+      <rect x="60" y="58" width="12" height="46" rx="6" fill="#47c4ff" opacity="0.5"/>
+      <rect x="104" y="58" width="12" height="46" rx="6" fill="#47c4ff" opacity="0.5"/>
+      <ellipse cx="228" cy="86" rx="38" ry="32" fill="#47c4ff" opacity="0.3"/>
+      <ellipse cx="210" cy="58" rx="17" ry="19" fill="#47c4ff" opacity="0.3"/>
+      <polygon points="200,44 192,24 212,38" fill="#47c4ff" opacity="0.3"/>
+      <polygon points="220,44 228,24 212,38" fill="#47c4ff" opacity="0.3"/>
+      <path d="M 266 96 Q 292 82, 300 106" fill="none" stroke="#47c4ff" stroke-width="9" stroke-linecap="round" opacity="0.3"/>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">outline only · no internal details</text>
+    </svg>`
+  },
+  {
+    id: 10, level: 2,
+    name: 'Symmetry in Perspective',
+    desc: 'Draw a square in perspective and place something symmetrical inside it — both sides must respect the perspective foreshortening.',
+    tip: 'Bridge between pure observation and spatial thinking. A hard gate-check.',
+    details: { trains: ['Perspective consistency', 'Spatial reasoning', 'Foreshortening awareness'], note: 'Difficulty spike: high. This bridges observation into true 3D thinking — a major milestone.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round">
+        <polygon points="38,132 182,132 222,28 78,28" stroke="#47c4ff" stroke-width="1.6" opacity="0.8"/>
+        <line x1="38" y1="132" x2="222" y2="28" stroke="#47c4ff" stroke-width="0.8" opacity="0.25" stroke-dasharray="5,4"/>
+        <line x1="182" y1="132" x2="78" y2="28" stroke="#47c4ff" stroke-width="0.8" opacity="0.25" stroke-dasharray="5,4"/>
+        <line x1="150" y1="28" x2="110" y2="132" stroke="#eeede6" stroke-width="0.9" opacity="0.2"/>
+        <path d="M 78 102 Q 130 58, 182 102" stroke="#eeede6" stroke-width="1.3" opacity="0.5"/>
+        <path d="M 90 78 Q 130 48, 172 78" stroke="#eeede6" stroke-width="1" opacity="0.28"/>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">symmetry + perspective foreshortening</text>
+    </svg>`
+  },
+  {
+    id: 11, level: 3,
+    name: 'Cylinder Rotation',
+    desc: 'Draw a cylinder and rotate it: top view, side view, 3/4 view, foreshortened. Watch how the ellipses change at each angle.',
+    tip: 'Cylinders = limbs, neck, fingers, torso. Worth every minute of repetition.',
+    details: { trains: ['Ellipse perspective', 'Form turning', 'Organic construction'], note: 'Critical for anatomy and figure drawing. Every limb is a cylinder — master the rotation and you master limbs.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round">
+        <ellipse cx="55" cy="36" rx="28" ry="8" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <line x1="27" y1="36" x2="27" y2="118" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <line x1="83" y1="36" x2="83" y2="118" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <ellipse cx="55" cy="118" rx="28" ry="8" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <ellipse cx="175" cy="40" rx="28" ry="14" stroke="#eeede6" stroke-width="1.3" opacity="0.52" transform="rotate(-18,175,40)"/>
+        <line x1="152" y1="50" x2="145" y2="126" stroke="#eeede6" stroke-width="1.3" opacity="0.52"/>
+        <line x1="196" y1="34" x2="206" y2="110" stroke="#eeede6" stroke-width="1.3" opacity="0.52"/>
+        <ellipse cx="175" cy="118" rx="28" ry="14" stroke="#eeede6" stroke-width="1.3" opacity="0.52" transform="rotate(-18,175,118)"/>
+        <ellipse cx="278" cy="80" rx="30" ry="22" stroke="#eeede6" stroke-width="1.2" opacity="0.26"/>
+        <ellipse cx="278" cy="80" rx="18" ry="13" stroke="#eeede6" stroke-width="0.8" opacity="0.16" stroke-dasharray="4,3"/>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">upright · 3/4 · foreshortened</text>
+    </svg>`
+  },
+  {
+    id: 12, level: 3,
+    name: 'Box Rotation with Horizon',
+    desc: 'Draw a horizon line and practice placing boxes in different positions and angles — all in relation to that line.',
+    tip: 'Start with the horizon as your anchor. Builds perspective intuition immediately.',
+    details: { trains: ['Perspective systems', 'Vanishing point logic', 'Orientation consistency'], note: 'Core concept: all box edges obey perspective relationships to the horizon. The horizon is your anchor.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <line x1="8" y1="68" x2="312" y2="68" stroke="#ff6b35" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+      <text x="272" y="64" font-family="Space Mono,monospace" font-size="9" fill="#ff6b35" opacity="0.7">H</text>
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="28,112 70,112 70,84 28,84" stroke="#ff6b35" stroke-width="1.4" opacity="0.85"/>
+        <polygon points="28,84 70,84 90,62 48,62" stroke="#ff6b35" stroke-width="1.4" opacity="0.85" fill="rgba(255,107,53,0.06)"/>
+        <line x1="70" y1="84" x2="90" y2="62" stroke="#ff6b35" stroke-width="1.4" opacity="0.85"/>
+        <line x1="70" y1="112" x2="90" y2="90" stroke="#ff6b35" stroke-width="1.4" opacity="0.85"/>
+        <line x1="90" y1="62" x2="90" y2="90" stroke="#ff6b35" stroke-width="1.4" opacity="0.85"/>
+        <polygon points="188,122 242,122 242,90 188,90" stroke="#eeede6" stroke-width="1.2" opacity="0.42"/>
+        <polygon points="188,90 242,90 252,48 198,48" stroke="#eeede6" stroke-width="1.2" opacity="0.42" fill="rgba(238,237,230,0.04)"/>
+        <line x1="242" y1="90" x2="252" y2="48" stroke="#eeede6" stroke-width="1.2" opacity="0.42"/>
+        <line x1="242" y1="122" x2="252" y2="80" stroke="#eeede6" stroke-width="1.2" opacity="0.42"/>
+        <line x1="252" y1="48" x2="252" y2="80" stroke="#eeede6" stroke-width="1.2" opacity="0.42"/>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">horizon as perspective anchor</text>
+    </svg>`
+  },
+  {
+    id: 13, level: 3,
+    name: 'Box Rotation Without Horizon',
+    desc: 'Draw boxes in various orientations from imagination — no horizon line. Add the horizon afterward to check your accuracy.',
+    tip: 'Hardest box exercise. Pure spatial imagination with no crutch.',
+    details: { trains: ['Internalized perspective', 'Mental 3D visualization', 'Spatial intuition'], note: 'This is one of the biggest milestones in drawing. When you can do this, perspective is truly internalized.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="58,48 110,38 132,70 80,80" stroke="#ff6b35" stroke-width="1.5" opacity="0.9" fill="rgba(255,107,53,0.06)"/>
+        <line x1="58" y1="48" x2="52" y2="112" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <line x1="110" y1="38" x2="104" y2="102" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <line x1="132" y1="70" x2="126" y2="134" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <polygon points="52,112 104,102 126,134 74,144" stroke="#ff6b35" stroke-width="1.5" opacity="0.9"/>
+        <line x1="80" y1="80" x2="74" y2="144" stroke="#ff6b35" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.45"/>
+        <line x1="10" y1="58" x2="310" y2="54" stroke="#333337" stroke-width="1" stroke-dasharray="8,5"/>
+        <text x="240" y="50" font-family="Montserrat, sans-serif" font-size="9" fill="#64646b">check H</text>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">draw box first → verify horizon after</text>
+    </svg>`
+  },
+  {
+    id: 14, level: 3,
+    name: 'Box Storage Room',
+    desc: 'Stack boxes on top of each other, side by side, one in front of another — all in a consistent 3D spatial relationship.',
+    tip: 'Trains relative object positioning — critical for any complex composition.',
+    details: { trains: ['Depth relationships', 'Object interaction', 'Scene construction', 'Consistent perspective'], note: 'Think like you\'re building a warehouse in 3D space — every box must agree with every other.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#ff6b35" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="28,132 80,132 96,116 44,116" stroke-width="1.3" opacity="0.9"/>
+        <polygon points="28,116 44,116 44,84 28,84" stroke-width="1.3" opacity="0.9" fill="rgba(255,107,53,0.05)"/>
+        <polygon points="44,116 96,116 96,84 44,84" stroke-width="1.3" opacity="0.9" fill="rgba(255,107,53,0.08)"/>
+        <polygon points="28,84 80,84 96,68 44,68" stroke-width="1.3" opacity="0.9" fill="rgba(255,107,53,0.1)"/>
+        <line x1="80" y1="84" x2="96" y2="68" stroke-width="1.3" opacity="0.9"/>
+        <line x1="80" y1="132" x2="96" y2="116" stroke-width="1.3" opacity="0.9"/>
+        <line x1="96" y1="68" x2="96" y2="116" stroke-width="1.3" opacity="0.9"/>
+        <polygon points="110,132 162,132 178,116 126,116" stroke-width="1.1" opacity="0.52"/>
+        <polygon points="110,116 126,116 126,84 110,84" stroke-width="1.1" opacity="0.52"/>
+        <polygon points="126,116 178,116 178,84 126,84" stroke-width="1.1" opacity="0.52" fill="rgba(255,107,53,0.04)"/>
+        <polygon points="110,84 162,84 178,68 126,68" stroke-width="1.1" opacity="0.52"/>
+        <line x1="162" y1="84" x2="178" y2="68" stroke-width="1.1" opacity="0.52"/>
+        <line x1="162" y1="132" x2="178" y2="116" stroke-width="1.1" opacity="0.52"/>
+        <line x1="178" y1="68" x2="178" y2="116" stroke-width="1.1" opacity="0.52"/>
+        <polygon points="76,148 164,148 188,128 100,128" stroke-width="1.2" opacity="0.3"/>
+        <polygon points="76,128 100,128 100,90 76,90" stroke-width="1.2" opacity="0.3"/>
+        <polygon points="100,128 188,128 188,90 100,90" stroke-width="1.2" opacity="0.3"/>
+        <polygon points="76,90 164,90 188,70 100,70" stroke-width="1.2" opacity="0.3"/>
+        <line x1="164" y1="90" x2="188" y2="70" stroke-width="1.2" opacity="0.3"/>
+        <line x1="164" y1="148" x2="188" y2="128" stroke-width="1.2" opacity="0.3"/>
+        <line x1="188" y1="70" x2="188" y2="128" stroke-width="1.2" opacity="0.3"/>
+      </g>
+      <text x="195" y="152" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">3D relationships</text>
+    </svg>`
+  },
+  {
+    id: 15, level: 4,
+    name: 'Box Slicing',
+    desc: 'Take a box and cut through it with an angled plane — reveal the cross-section. Practise cuts in different directions.',
+    tip: 'First subtractive exercise — thinking by removing form.',
+    details: { trains: ['Cross-sections', 'Plane understanding', 'Structural editing'], note: 'Important for industrial design, vehicles, and hard surface art. This is subtractive thinking.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="38,132 132,132 158,106 64,106" stroke="#333337" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="38" y1="132" x2="38" y2="48" stroke="#333337" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="132" y1="132" x2="132" y2="48" stroke="#333337" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="158" y1="106" x2="158" y2="22" stroke="#333337" stroke-width="1" stroke-dasharray="4,3"/>
+        <polygon points="38,48 132,48 158,22 64,22" stroke="#333337" stroke-width="1" stroke-dasharray="4,3"/>
+        <polygon points="38,132 132,48 158,58 64,142" stroke="#c49dff" stroke-width="1.4" fill="rgba(196,157,255,0.07)" opacity="0.8"/>
+        <polygon points="38,132 132,132 132,48" stroke="#c49dff" stroke-width="1.8" opacity="0.9"/>
+        <line x1="38" y1="132" x2="38" y2="48" stroke="#c49dff" stroke-width="1.8" opacity="0.9"/>
+        <polygon points="38,132 132,48 38,48" stroke="#c49dff" stroke-width="1.2" fill="rgba(196,157,255,0.1)" opacity="0.7"/>
+      </g>
+      <text x="175" y="148" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">angled cross-section</text>
+    </svg>`
+  },
+  {
+    id: 16, level: 4,
+    name: 'Box Extrusion',
+    desc: 'Take a face of a box and pull it outward — create a more complex form by adding geometry.',
+    tip: 'Addition vs subtraction — two modes of 3D thinking. This one is addition.',
+    details: { trains: ['Complex structure design', 'Mechanical thinking', 'Architectural form development'], note: 'This is how many complex real-world objects are built — additive geometry on a base form.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="28,132 130,132 156,106 54,106" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <polygon points="28,106 54,106 54,34 28,34" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <polygon points="54,106 156,106 156,34 54,34" stroke="#c49dff" stroke-width="1.3" opacity="0.65" fill="rgba(196,157,255,0.04)"/>
+        <polygon points="28,34 130,34 156,8 54,8" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <line x1="130" y1="34" x2="156" y2="8" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <line x1="130" y1="132" x2="156" y2="106" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <line x1="156" y1="8" x2="156" y2="106" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <polygon points="156,106 238,106 238,54 156,54" stroke="#c49dff" stroke-width="1.8" opacity="0.95" fill="rgba(196,157,255,0.07)"/>
+        <polygon points="156,54 238,54 258,34 176,34" stroke="#c49dff" stroke-width="1.8" opacity="0.95" fill="rgba(196,157,255,0.05)"/>
+        <line x1="238" y1="54" x2="258" y2="34" stroke="#c49dff" stroke-width="1.8" opacity="0.95"/>
+        <line x1="238" y1="106" x2="258" y2="86" stroke="#c49dff" stroke-width="1.8" opacity="0.95"/>
+        <line x1="258" y1="34" x2="258" y2="86" stroke="#c49dff" stroke-width="1.8" opacity="0.95"/>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">selected face → extruded outward</text>
+    </svg>`
+  },
+  {
+    id: 17, level: 4,
+    name: 'Volume Bending',
+    desc: 'Take a cylinder or box and bend it as if it were made of clay — turn a straight cylinder into a banana shape.',
+    tip: 'Essential for figures and organic forms — nothing in nature is perfectly straight.',
+    details: { trains: ['Flexible volume control', 'Organic deformation', 'Maintaining solidity while curving'], note: 'Examples: banana cylinders, bent pipes, curved machinery. The form must stay solid through the bend.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round">
+        <ellipse cx="62" cy="30" rx="22" ry="7" stroke="#c49dff" stroke-width="1.4" opacity="0.9"/>
+        <line x1="40" y1="30" x2="40" y2="118" stroke="#c49dff" stroke-width="1.4" opacity="0.9"/>
+        <line x1="84" y1="30" x2="84" y2="118" stroke="#c49dff" stroke-width="1.4" opacity="0.9"/>
+        <ellipse cx="62" cy="118" rx="22" ry="7" stroke="#c49dff" stroke-width="1.4" opacity="0.9"/>
+        <line x1="112" y1="74" x2="150" y2="74" stroke="#64646b" stroke-width="1"/>
+        <polygon points="150,69 163,74 150,79" fill="#64646b"/>
+        <path d="M 180 28 C 195 70, 220 92, 252 112" fill="none" stroke="#c49dff" stroke-width="18" stroke-linecap="round" opacity="0.12"/>
+        <path d="M 172 36 C 185 74, 210 96, 242 118" fill="none" stroke="#c49dff" stroke-width="1.5" opacity="0.9"/>
+        <path d="M 188 22 C 205 66, 232 88, 262 106" fill="none" stroke="#c49dff" stroke-width="1.5" opacity="0.9"/>
+        <ellipse cx="180" cy="29" rx="12" ry="4" stroke="#c49dff" stroke-width="1.4" opacity="0.9" transform="rotate(-8,180,29)"/>
+        <ellipse cx="252" cy="112" rx="12" ry="4" stroke="#c49dff" stroke-width="1.4" opacity="0.9" transform="rotate(32,252,112)"/>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">straight cylinder → banana shape</text>
+    </svg>`
+  },
+  {
+    id: 18, level: 4,
+    name: 'Beveling',
+    desc: 'Round off the hard edges of boxes and cylinders — as if the form is slightly melting. Bevel selected or all edges.',
+    tip: 'Most real objects have bevelled edges — they are never perfectly sharp.',
+    details: { trains: ['Surface transitions', 'Industrial realism', 'Softer shape language'], note: 'Useful for product design, props, and stylized forms. Adds believability to hard-surface objects.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="28,122 90,122 112,100 50,100" stroke="#c49dff" stroke-width="1.3" opacity="0.4"/>
+        <polygon points="28,100 50,100 50,38 28,38" stroke="#c49dff" stroke-width="1.3" opacity="0.4"/>
+        <polygon points="50,100 112,100 112,38 50,38" stroke="#c49dff" stroke-width="1.3" opacity="0.4"/>
+        <polygon points="28,38 90,38 112,16 50,16" stroke="#c49dff" stroke-width="1.3" opacity="0.4"/>
+        <line x1="90" y1="38" x2="112" y2="16" stroke="#c49dff" stroke-width="1.3" opacity="0.4"/>
+        <line x1="90" y1="122" x2="112" y2="100" stroke="#c49dff" stroke-width="1.3" opacity="0.4"/>
+        <line x1="112" y1="16" x2="112" y2="100" stroke="#c49dff" stroke-width="1.3" opacity="0.4"/>
+        <line x1="128" y1="70" x2="158" y2="70" stroke="#64646b" stroke-width="1"/>
+        <polygon points="158,65 170,70 158,75" fill="#64646b"/>
+        <polygon points="186,118 234,118 252,102 204,102" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <path d="M 182,114 Q 180,120 186,118" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <line x1="182" y1="48" x2="182" y2="114" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <path d="M 182,48 Q 180,40 186,34" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <polygon points="186,34 234,34 252,18 204,18" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <line x1="234" y1="34" x2="252" y2="18" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <line x1="234" y1="118" x2="252" y2="102" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <line x1="252" y1="18" x2="252" y2="102" stroke="#c49dff" stroke-width="1.6" opacity="0.95"/>
+        <path d="M 234,34 Q 246,26 252,18" stroke="#c49dff" stroke-width="1.4" opacity="0.8"/>
+        <path d="M 234,118 Q 246,114 252,102" stroke="#c49dff" stroke-width="1.4" opacity="0.8"/>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">hard edges → rounded transitions</text>
+    </svg>`
+  },
+  {
+    id: 19, level: 4,
+    name: '3D Blobs',
+    desc: 'Draw free organic 3D masses with no clean geometry — clouds, rocks, flesh masses. They must still feel solid.',
+    tip: 'Cross-contour lines are the key to the illusion of volume in chaotic shapes.',
+    details: { trains: ['Organic volume', 'Non-geometric construction', 'Visual weight'], note: 'The challenge: making chaos still feel solid. Examples: rocks, clouds, flesh masses, terrain.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round">
+        <path d="M 48 86 C 44 56, 64 28, 96 34 C 122 38, 142 56, 146 82 C 150 108, 134 138, 104 140 C 72 144, 52 116, 48 86 Z" stroke="#c49dff" stroke-width="1.6" opacity="0.85" fill="rgba(196,157,255,0.05)"/>
+        <path d="M 58 76 Q 97 58, 136 70" fill="none" stroke="#c49dff" stroke-width="0.9" opacity="0.4"/>
+        <path d="M 50 100 Q 97 84, 144 96" fill="none" stroke="#c49dff" stroke-width="0.9" opacity="0.28"/>
+        <path d="M 56 118 Q 97 108, 140 116" fill="none" stroke="#c49dff" stroke-width="0.9" opacity="0.16"/>
+        <path d="M 180 72 C 174 44, 198 24, 224 32 C 248 38, 266 60, 262 84 C 258 108, 240 124, 218 120 C 196 116, 184 98, 180 72 Z" stroke="#c49dff" stroke-width="1.4" opacity="0.45" fill="rgba(196,157,255,0.03)"/>
+        <path d="M 188 66 Q 220 52, 256 64" fill="none" stroke="#c49dff" stroke-width="0.8" opacity="0.22"/>
+        <path d="M 183 90 Q 220 78, 258 88" fill="none" stroke="#c49dff" stroke-width="0.8" opacity="0.16"/>
+      </g>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">cross-contours → illusion of volume</text>
+    </svg>`
+  },
+  {
+    id: 20, level: 4,
+    name: 'Full Construction Study',
+    desc: 'Pick a complex real object (car, animal, furniture) and construct it using everything: boxes, cylinders, slices, extrusions, bevels, blobs.',
+    tip: 'This is where you see how much the exercises have actually given you. Everything connects.',
+    details: { trains: ['Real-world application', 'Simplification', 'Structural analysis', 'Imaginative reconstruction'], note: 'Examples: cars, animals, furniture, weapons, architecture. This is where fundamentals become actual drawing ability.' },
+    svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="38,112 252,112 268,92 54,92" stroke="#c49dff" stroke-width="1.3" opacity="0.65" fill="rgba(196,157,255,0.04)"/>
+        <line x1="38" y1="92" x2="38" y2="112" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <line x1="268" y1="92" x2="268" y2="98" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <polygon points="80,92 202,92 218,60 96,60" stroke="#c49dff" stroke-width="1.3" opacity="0.65" fill="rgba(196,157,255,0.06)"/>
+        <line x1="80" y1="60" x2="80" y2="92" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <line x1="218" y1="60" x2="218" y2="92" stroke="#c49dff" stroke-width="1.3" opacity="0.65"/>
+        <ellipse cx="94" cy="117" rx="22" ry="8" stroke="#ff6b35" stroke-width="1.2" opacity="0.7"/>
+        <ellipse cx="94" cy="122" rx="22" ry="8" stroke="#ff6b35" stroke-width="1.1" opacity="0.45"/>
+        <line x1="72" y1="117" x2="72" y2="122" stroke="#ff6b35" stroke-width="1.2" opacity="0.7"/>
+        <line x1="116" y1="117" x2="116" y2="122" stroke="#ff6b35" stroke-width="1.2" opacity="0.7"/>
+        <ellipse cx="216" cy="117" rx="22" ry="8" stroke="#ff6b35" stroke-width="1.2" opacity="0.7"/>
+        <ellipse cx="216" cy="122" rx="22" ry="8" stroke="#ff6b35" stroke-width="1.1" opacity="0.45"/>
+        <line x1="194" y1="117" x2="194" y2="122" stroke="#ff6b35" stroke-width="1.2" opacity="0.7"/>
+        <line x1="238" y1="117" x2="238" y2="122" stroke="#ff6b35" stroke-width="1.2" opacity="0.7"/>
+        <path d="M 38,92 Q 40,82 54,92" stroke="#c49dff" stroke-width="1.1" opacity="0.45"/>
+      </g>
+      <circle cx="148" cy="76" r="2" fill="#d4ff47" opacity="0.8"/>
+      <circle cx="94" cy="119" r="2" fill="#ff6b35" opacity="0.8"/>
+      <circle cx="38" cy="102" r="2" fill="#c49dff" opacity="0.8"/>
+      <text x="24" y="155" font-family="Montserrat, sans-serif" font-size="10" fill="#64646b">boxes + cylinders + bevels = object</text>
+    </svg>`
+  },
+];
+
+// ─── STATE ───
+let count = 3;
+let showingAll = false;
+
+const countDisp   = document.getElementById('count-disp');
+const resultsSection = document.getElementById('results');
+const resultsTag  = document.getElementById('results-tag');
+const cardsGrid   = document.getElementById('cards-grid');
+const allSection  = document.getElementById('all-section');
+const allList     = document.getElementById('all-list');
+const toggleAllBtn = document.getElementById('toggle-all');
+
+function setCount(n) {
+  count = Math.max(1, Math.min(20, n));
+  countDisp.textContent = count;
+}
+
+document.getElementById('dec').addEventListener('click', () => setCount(count - 1));
+document.getElementById('inc').addEventListener('click', () => setCount(count + 1));
+
+// ─── ROLL ───
+function roll() {
+  const pool = [...EXERCISES];
+  const picked = [];
+  while (picked.length < count && pool.length) {
+    const idx = Math.floor(Math.random() * pool.length);
+    picked.push(pool.splice(idx, 1)[0]);
+  }
+  picked.sort((a, b) => a.level - b.level || a.id - b.id);
+  renderCards(picked);
+  resultsTag.textContent = `${picked.length} of 20 exercises`;
+  resultsSection.classList.add('on');
+  setTimeout(() => {
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
+}
+
+document.getElementById('roll-btn').addEventListener('click', roll);
+document.getElementById('reroll').addEventListener('click', roll);
+
+// ─── CARDS ───
+function levelInfo(lvl) { return LEVELS.find(l => l.id === lvl); }
+
+function visualHTML(ex) {
+  const imgUrl = EXERCISE_IMAGES[ex.id];
+  if (imgUrl) return `<img src="${imgUrl}" alt="${ex.name}">`;
+  return ex.svg;
+}
+
+function renderCards(list) {
+  cardsGrid.innerHTML = '';
+  list.forEach((ex, i) => {
+    const lv = levelInfo(ex.level);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = i * 0.05 + 's';
+    card.innerHTML = `
+      <div class="card-visual">
+        ${visualHTML(ex)}
+        <span class="level-badge ${lv.color}">LVL ${ex.level}</span>
+        <span class="ex-num">#${String(ex.id).padStart(2,'0')}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${ex.name}</div>
+        <div class="card-desc">${ex.desc}</div>
+        <div class="card-tip">&#128161; ${ex.tip}</div>
+      </div>
+    `;
+    cardsGrid.appendChild(card);
+  });
+}
+
+// ─── ALL LIST ───
+function renderAll() {
+  allList.innerHTML = '';
+  LEVELS.forEach(lv => {
+    const exes = EXERCISES.filter(e => e.level === lv.id);
+    const sec = document.createElement('div');
+    sec.className = 'level-section';
+    sec.innerHTML = `<div class="level-title" style="color:${lv.colorVal}">${lv.label}</div>`;
+    const grid = document.createElement('div');
+    grid.className = 'list-grid';
+    exes.forEach(ex => {
+      const d = ex.details || {};
+      const trainTags = (d.trains || []).map(t => `<span class="list-train-tag">${t}</span>`).join('');
+      const noteHtml = d.note ? `<div class="list-note">${d.note}</div>` : '';
+      const item = document.createElement('div');
+      item.className = 'list-item';
+      item.innerHTML = `
+        <div class="list-visual">${visualHTML(ex)}</div>
+        <div class="list-body">
+          <div class="list-num">#${String(ex.id).padStart(2,'0')}</div>
+          <div class="list-name">${ex.name}</div>
+          <div class="list-desc">${ex.desc}</div>
+          ${trainTags ? `<div class="list-trains">${trainTags}</div>` : ''}
+          ${noteHtml}
+        </div>
+      `;
+      grid.appendChild(item);
+    });
+    sec.appendChild(grid);
+    allList.appendChild(sec);
+  });
+}
+
+toggleAllBtn.addEventListener('click', () => {
+  showingAll = !showingAll;
+  if (showingAll) {
+    renderAll();
+    allSection.classList.add('on');
+    toggleAllBtn.textContent = '↑ Hide list';
+    setTimeout(() => allSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  } else {
+    allSection.classList.remove('on');
+    toggleAllBtn.textContent = 'All exercises';
+  }
+});
+</script>
+</body>
+</html>

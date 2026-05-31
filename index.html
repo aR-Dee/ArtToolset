@@ -9,6 +9,56 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="cover.css">
+    <style>
+      .tool-card {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        transition: background 0.2s, border-color 0.2s;
+        text-decoration: none;
+        display: block;
+        color: #fff;
+      }
+      .tool-card:hover {
+        background: rgba(255,255,255,0.13);
+        border-color: rgba(255,255,255,0.35);
+        color: #fff;
+        text-decoration: none;
+      }
+      .tool-card .tool-tag {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0.55;
+        margin-bottom: 0.4rem;
+      }
+      .tool-card h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.4rem;
+      }
+      .tool-card p {
+        margin: 0;
+        opacity: 0.7;
+        font-size: 0.95rem;
+      }
+      .tool-card .arrow {
+        float: right;
+        font-size: 1.5rem;
+        opacity: 0.4;
+        margin-top: -0.1rem;
+      }
+      .spicy-tag {
+        color: #F2B200;
+        opacity: 1 !important;
+      }
+      .warmup-tag {
+        color: #47c4ff;
+        opacity: 1 !important;
+      }
+    </style>
   </head>
 <body>
 
@@ -37,6 +87,13 @@
     <div class="custom-control custom-checkbox">
       <input type="checkbox" class="custom-control-input char_box" id="char_games_box" value="character.game" checked>
       <label class="custom-control-label" for="char_games_box">Games</label>
+      <a href="drawing-warmup/drawing-warmp.html" class="tool-card">
+        <span class="arrow">→</span>
+        <div class="tool-tag warmup-tag">✏️ Drawing Warmup</div>
+        <h3>Drawing Warmup Exercises</h3>
+        <p>20 structured exercises across 4 difficulty levels. Roll a random set before every drawing session.</p>
+      </a>
+
     </div>
       <div class="custom-control custom-checkbox">
         <input type="checkbox" class="custom-control-input char_box" id="char_anime_box" value="character.anime" checked>
