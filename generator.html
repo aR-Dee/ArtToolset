@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="cover.css">
     <style>
       :root {
-        --character: #7D5BA6;
-        --action:    #F2B200;
-        --place:     #3CA67A;
+        --character: #C9B8F0;
+        --action:    #FFE08A;
+        --place:     #A8DFC4;
       }
 
       .cover-container { max-width: 72em; }
@@ -55,6 +55,28 @@
       .filter-label.lbl-place     { color: var(--place); }
 
       .custom-control-label { font-size: 0.92rem; }
+
+      /* ── Toggle all link ── */
+      .toggle-all {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        opacity: 0.45;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        color: inherit;
+        margin-top: 0.1rem;
+        margin-bottom: 0.25rem;
+      }
+      .toggle-all:hover { opacity: 0.85; }
+
+      /* ── Sentence colours ── */
+      .s-character { color: var(--character); font-weight: 700; }
+      .s-action    { color: var(--action);    font-weight: 700; }
+      .s-place     { color: var(--place);     font-weight: 700; }
 
       /* ── Error ── */
       .gen-error {
@@ -100,6 +122,7 @@
     <div class="filter-row">
       <div class="filter-group">
         <div class="filter-label lbl-character">Character</div>
+        <button class="toggle-all" data-group="char_box">all / none</button>
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input char_box" id="char_generic_box" value="character.generic" checked>
           <label class="custom-control-label" for="char_generic_box">Generic</label>
@@ -124,6 +147,7 @@
 
       <div class="filter-group">
         <div class="filter-label lbl-action">Action</div>
+        <button class="toggle-all" data-group="action_box">all / none</button>
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input action_box" id="action_generic_box" value="action.generic" checked>
           <label class="custom-control-label" for="action_generic_box">Generic</label>
@@ -148,6 +172,7 @@
 
       <div class="filter-group">
         <div class="filter-label lbl-place">Place</div>
+        <button class="toggle-all" data-group="place_box">all / none</button>
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input place_box" id="place_generic_box" value="place.generic" checked>
           <label class="custom-control-label" for="place_generic_box">Generic</label>
@@ -191,5 +216,15 @@
 </div>
 
 <script src="randomizer.js"></script>
+<script>
+  // Toggle all / none per group
+  document.querySelectorAll('.toggle-all').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var boxes = document.querySelectorAll('input.' + btn.dataset.group);
+      var allChecked = Array.from(boxes).every(function(b) { return b.checked; });
+      boxes.forEach(function(b) { b.checked = !allChecked; });
+    });
+  });
+</script>
 </body>
 </html>

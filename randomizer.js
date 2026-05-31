@@ -30,7 +30,10 @@ function generateStory(filtered) {
     var rndAct       = rndElementPickup(action).toLowerCase();
     var rndPlaceGlue = rndElementPickup(placement).toLowerCase();
 
-    return rndChar + " " + rndAct + " " + rndPlaceGlue + " " + rndPlace;
+    return '<span class="s-character">' + rndChar + '</span>'
+         + ' <span class="s-action">' + rndAct + '</span>'
+         + ' ' + rndPlaceGlue + ' '
+         + '<span class="s-place">' + rndPlace + '</span>';
 }
 
 function getStoryPart(filteredObj) {
@@ -78,7 +81,7 @@ $(document).ready(function () {
         } else {
             $("#checkbox-error").hide();
             var story = generateStory(storyFilter());
-            $(".generated-story").text(story);
+            $(".generated-story").html(story);
             $("#result-box").addClass("visible");
         }
     });
