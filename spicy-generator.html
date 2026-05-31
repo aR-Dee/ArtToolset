@@ -188,6 +188,7 @@ const DATA = {
     { name: "Confident",  sub: "Self-assured, flirtatious" },
     { name: "Surprised",  sub: "Astonished, amazed" },
     { name: "Shy",        sub: "Timid, bashful" },
+    { name: "Innocent",   sub: "Pure, naive" },
   ],
   tone: [
     { name: "Lustful",    sub: "Raw, carnal desire and hunger" },
@@ -196,6 +197,7 @@ const DATA = {
     { name: "Seductive",  sub: "Proactive, alluring, and enticing" },
     { name: "Rough",      sub: "Animalistic and physically intense" },
     { name: "Tender",     sub: "Loving, gentle, and intimate" },
+    { name: "Taboo",      sub: "Forbidden, transgressive, and thrilling" },
   ],
   // article is omitted — computed at runtime from the mood word
   character: [
@@ -206,55 +208,71 @@ const DATA = {
     { name: "Adventurer" },
     { name: "Elf" },
     { name: "Office Lady" },
+    { name: "Neighbour" },
     { name: "Goth" },
     { name: "Monster Girl" },
     { name: "MILF" },
     { name: "Priestess" },
+    { name: "Nun" },
     { name: "Own Pick" },
   ],
   // noun = how the action reads in the sentence; verbs have no article baked in
   action: [
-    { name: "Oral feast",     noun: "an oral feast",      verbs: ["lost in", "indulging in", "surrendering to", "consumed by"] },
-    { name: "Cuddling",       noun: "cuddling",           verbs: ["lost in", "melting into", "wrapped up in", "surrendering to"] },
-    { name: "Spanking",       noun: "a spanking",         verbs: ["savoring", "giving in to", "melting under", "consumed by"] },
-    { name: "Kissing",        noun: "a kiss",             verbs: ["lost in", "drowning in", "melting into", "surrendering to"] },
-    { name: "Sex act",        noun: "lovemaking",         verbs: ["lost in", "consumed by", "indulging in", "surrendering to"] },
-    { name: "Toying",         noun: "toying",             verbs: ["lost in", "savoring", "indulging in", "giving in to"] },
-    { name: "Lap grinding",   noun: "lap grinding",       verbs: ["lost in", "melting into", "surrendering to", "consumed by"] },
-    { name: "Shower / Bathe", noun: "a shared bath",      verbs: ["melting into", "savoring", "surrendering to", "lost in"] },
-    { name: "Role-play",      noun: "a role-play",        verbs: ["deep in", "consumed by", "lost in", "playing out"] },
-    { name: "Striptease",     noun: "a striptease",       verbs: ["captivating with", "melting into", "savoring", "lost in"] },
-    { name: "Foreplay",       noun: "foreplay",           verbs: ["savoring", "lost in", "drowning in", "indulging in"] },
-    { name: "Edging",         noun: "edging",             verbs: ["drawn into", "trapped in", "surrendering to", "consumed by"] },
+    { name: "Oral feast",   noun: "an oral feast",    verbs: ["lost in", "indulging in", "surrendering to", "consumed by"] },
+    { name: "Cuddling",     noun: "cuddling",         verbs: ["lost in", "melting into", "wrapped up in", "surrendering to"] },
+    { name: "Spanking",     noun: "a spanking",       verbs: ["savoring", "giving in to", "melting under", "consumed by"] },
+    { name: "Kissing",      noun: "a kiss",           verbs: ["lost in", "drowning in", "melting into", "surrendering to"] },
+    { name: "Sex act",      noun: "lovemaking",       verbs: ["lost in", "consumed by", "indulging in", "surrendering to"] },
+    { name: "Toying",       noun: "toying",           verbs: ["lost in", "savoring", "indulging in", "giving in to"] },
+    { name: "Lap grinding", noun: "lap grinding",     verbs: ["lost in", "melting into", "surrendering to", "consumed by"] },
+    { name: "Shower",       noun: "a shower",         verbs: ["sharing", "savoring", "stealing", "lost in"] },
+    { name: "Bathing",      noun: "a bath",           verbs: ["sharing", "melting into", "savoring", "lost in"] },
+    { name: "Role-play",    noun: "a role-play",      verbs: ["deep in", "consumed by", "lost in", "playing out"] },
+    { name: "Striptease",   noun: "a striptease",     verbs: ["captivating with", "performing", "savoring", "lost in"] },
+    { name: "Foreplay",     noun: "foreplay",         verbs: ["savoring", "lost in", "drowning in", "indulging in"] },
+    { name: "Edging",       noun: "edging",           verbs: ["drawn into", "trapped in", "surrendering to", "consumed by"] },
+    
   ],
   // phrase = how the fetish reads after a bridge word
   fetish: [
-    { name: "Bondage",              phrase: "bondage" },
-    { name: "Corruption & Tainting",phrase: "corruption and tainting" },
-    { name: "Pet play",             phrase: "pet play" },
-    { name: "Tight Clothing",       phrase: "tight clothing" },
-    { name: "Hypnosis",             phrase: "hypnosis" },
-    { name: "Feet / High-heels",    phrase: "feet and high-heels" },
-    { name: "Exhibitionism",        phrase: "exhibitionism" },
-    { name: "Marks & Bites",        phrase: "marks and bites" },
-    { name: "Cosplay",              phrase: "cosplay" },
-    { name: "Sensory Play",         phrase: "sensory play" },
-    { name: "Dom-sub",              phrase: "dom-sub dynamics" },
-    { name: "Worship",              phrase: "worship" },
+    { name: "Bondage",             phrase: "bondage" },
+    { name: "Corruption",          phrase: "corruption and tainting" },
+    { name: "Pet play",            phrase: "pet play" },
+    { name: "Tight Clothing",      phrase: "tight clothing" },
+    { name: "Hypnosis",            phrase: "hypnosis" },
+    { name: "Feet",                phrase: "feet worship" },
+    { name: "High-heels",          phrase: "high-heels" },
+    { name: "Exhibitionism",       phrase: "exhibitionism" },
+    { name: "Marks & Bites",       phrase: "marks and bites" },
+    { name: "Cosplay",             phrase: "cosplay" },
+    { name: "Sensory Play",        phrase: "sensory play" },
+    { name: "Dom-sub",             phrase: "dom-sub dynamics" },
+    { name: "Worship",             phrase: "worship" },
+    { name: "Worship",             phrase: "worship" },
+    { name: "Orgasm Control",      phrase: "orgasm control" },
+    { name: "Public Play",         phrase: "risky public play" },
+    { name: "Voyeurism",           phrase: "voyeurism" },
+    { name: "Dirty Talk",         phrase: "dirty talk" },
+    { name: "Role Reversal",       phrase: "role reversal" },
+    { name: "Sensory Deprivation", phrase: "sensory deprivation" },
   ],
   setting: [
-    { name: "Bedroom",            inSentence: "the bedroom",              sub: "Classic, intimate" },
-    { name: "Dungeon",            inSentence: "a dungeon",                sub: "Dark, BDSM, fantasy" },
-    { name: "Hot Spring",         inSentence: "a hot spring",             sub: "Relaxing, natural, sensual" },
-    { name: "Wilderness",         inSentence: "the wilderness",           sub: "Forest, beach, or campsite" },
-    { name: "Classroom / Office", inSentence: "a classroom / office",     sub: "Authority dynamic" },
-    { name: "VIP Lounge",         inSentence: "a VIP lounge",             sub: "Exclusive, secretive, powerful" },
-    { name: "Private Bath",       inSentence: "a private bath",           sub: "Luxurious bathing room" },
-    { name: "Library",            inSentence: "a library",                sub: "Public and hidden spaces" },
-    { name: "Attic / Loft",       inSentence: "an attic loft",            sub: "Hidden, stolen moments" },
-    { name: "Altar / Ritual",     inSentence: "a ritual altar",           sub: "Sacred and forbidden" },
-    { name: "Tavern / Inn",       inSentence: "a tavern",                 sub: "Classic fantasy social setting" },
-    { name: "Public / Risky",     inSentence: "a risky public spot",      sub: "Park, elevator, alleyway, train…" },
+    { name: "Bedroom",       inSentence: "the bedroom",          sub: "Classic, intimate" },
+    { name: "Dungeon",       inSentence: "a dungeon",            sub: "Dark, BDSM, fantasy" },
+    { name: "Hot Spring",    inSentence: "a hot spring",         sub: "Relaxing, natural, sensual" },
+    { name: "Wilderness",    inSentence: "the wilderness",       sub: "Forest, beach, or campsite" },
+    { name: "Classroom",     inSentence: "a classroom",          sub: "Authority dynamic" },
+    { name: "Office",        inSentence: "an office",            sub: "Authority dynamic" },
+    { name: "VIP Lounge",    inSentence: "a VIP lounge",         sub: "Exclusive, secretive, powerful" },
+    { name: "Private Bath",  inSentence: "a private bath",       sub: "Luxurious bathing room" },
+    { name: "Library",       inSentence: "a library",            sub: "Public and hidden spaces" },
+    { name: "Attic",         inSentence: "an attic",             sub: "Hidden, stolen moments" },
+    { name: "Loft",          inSentence: "a loft",               sub: "Hidden, stolen moments" },
+    { name: "Altar",         inSentence: "a ritual altar",       sub: "Sacred and forbidden" },
+    { name: "Ritual Space",  inSentence: "a ritual space",       sub: "Sacred and forbidden" },
+    { name: "Tavern",        inSentence: "a tavern",             sub: "Classic fantasy social setting" },
+    { name: "Inn",           inSentence: "an inn",               sub: "Classic fantasy social setting" },
+    { name: "Public Space",  inSentence: "a risky public spot",  sub: "Park, elevator, alleyway, train…" },
   ],
 
   // Randomised connective phrases — all work with abstract nouns
@@ -264,7 +282,8 @@ const DATA = {
   ],
   settingPrep: ["in", "within", "deep in", "hidden away in"],
   toneNoun: ["undertone", "energy", "tension", "desire", "pull", "heat"],
-  toneIntro: ["with a", "carrying a", "fueled by a", "giving in to a"],
+  // articles stripped — computed at runtime so "explicit" gets "an" correctly
+  toneIntro: ["with", "carrying", "fueled by", "bathed in"],
 };
 
 function pick(arr) {
@@ -292,8 +311,9 @@ document.getElementById('roll-btn').addEventListener('click', function () {
   const toneNoun  = pick(DATA.toneNoun);
   const toneIntro = pick(DATA.toneIntro);
 
-  // Article computed from the mood word so it always agrees grammatically
-  const article = /^[aeiou]/i.test(mood.name) ? 'An' : 'A';
+  // Articles computed from the word that follows them
+  const article     = /^[aeiou]/i.test(mood.name) ? 'An' : 'A';
+  const toneArticle = /^[aeiou]/i.test(tone.name) ? 'an' : 'a';
 
   // Build the character + mood opening
   let opening;
@@ -310,7 +330,7 @@ document.getElementById('roll-btn').addEventListener('click', function () {
     span("r-fetish", fetish.phrase) +
     `, ${prep} ` +
     span("r-setting", setting.inSentence) +
-    `, ${toneIntro} ` +
+    `, ${toneIntro} ${toneArticle} ` +
     span("r-tone", tone.name.toLowerCase()) +
     ` ${toneNoun}.`;
 
