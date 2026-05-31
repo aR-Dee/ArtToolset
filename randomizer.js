@@ -1,100 +1,85 @@
-    var placement = ["in","at","over","under", "in front of", "at the back of", "at a side of", "next to"];
-    var gInfo;
-    let filtered = [];
+var placement = ["in", "at", "over", "under", "in front of", "at the back of", "at a side of", "next to"];
+var gInfo;
 
-    function loadJSONfiles(){
-  // !!! names in array must mach filenames !!!
-    let g_info = {"character":"", "place":"", "action":""}
-    let keys = Object.keys(g_info)
+function loadJSONfiles() {
+    let g_info = { character: {}, place: {}, action: {} };
+    let keys = Object.keys(g_info);
 
-    for(let i in keys){
-        $.getJSON(keys[i]+".json", function(data){
-            g_info[keys[i]] = data
-        }).fail(function(){
-            console.log("An error has occurred when loading :" + keys[i]);
+    for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        $.getJSON(key + ".json", function (data) {
+            g_info[key] = data;
+        }).fail(function () {
+            console.log("An error has occurred when loading: " + key);
         });
     }
     return g_info;
-};
+}
 
-function generateStory(filtered){
+function generateStory(filtered) {
     let character = [], action = [], place = [];
 
-    //divides into basic categories that make story from chosen filters
-    for (let i in filtered){
-        if(filtered[i].search("character") != -1){ character = character.concat(getStoryPart(filtered[i])) }
-        if(filtered[i].search("place") != -1){place = place.concat(getStoryPart(filtered[i]))}
-        if(filtered[i].search("action") != -1){action = action.concat(getStoryPart(filtered[i]))}
+    for (let i in filtered) {
+        if (filtered[i].search("character") != -1) { character = character.concat(getStoryPart(filtered[i])); }
+        if (filtered[i].search("place") != -1)     { place     = place.concat(getStoryPart(filtered[i])); }
+        if (filtered[i].search("action") != -1)    { action    = action.concat(getStoryPart(filtered[i])); }
     }
 
-    var rndChar = rndElementPickup(character);
-    var rndPlace = rndElementPickup(place);
-    var rndAct = rndElementPickup(action).toLowerCase();
+    var rndChar      = rndElementPickup(character);
+    var rndPlace     = rndElementPickup(place);
+    var rndAct       = rndElementPickup(action).toLowerCase();
     var rndPlaceGlue = rndElementPickup(placement).toLowerCase();
 
-    return rndChar +" "+ rndAct +" "+ rndPlaceGlue +" "+ rndPlace;
+    return rndChar + " " + rndAct + " " + rndPlaceGlue + " " + rndPlace;
 }
 
-function getStoryPart(filteredObj){
-    let a = filteredObj.split(".")
-    return gInfo[a[0]][a[1]]
+function getStoryPart(filteredObj) {
+    let a = filteredObj.split(".");
+    return gInfo[a[0]][a[1]];
 }
 
-function rndElementPickup(elArray){
-    return singleRandom = elArray[Math.floor(Math.random() * elArray.length)];
+function rndElementPickup(elArray) {
+    return elArray[Math.floor(Math.random() * elArray.length)];
 }
 
-function storyFilter(){
-var checks = document.querySelectorAll("input[type='checkbox']:checked");
-let filtered_sections = [];
-    for (let i in checks){
-            ////how to pass checkbox values to filtered global var?
-            if(checks[i].checked == true){
-                filtered_sections.push(checks[i].value);
-            }
-    }
-    return filtered_sections
-}
-
-function checkBoxStates(){
-    var charChecks = validateChecks(document.querySelectorAll("input.char_box"));
-    var placeChecks = validateChecks(document.querySelectorAll("input.action_box"));
-    var actionChecks = validateChecks(document.querySelectorAll("input.place_box"));
-
-    if(charChecks & placeChecks & actionChecks) return true
-    else return false
-}
-
-function validateChecks(boxChecks){
-    var counter = 0;
-    for(i in boxChecks){
-        if (boxChecks[i].checked == true) counter ++;
+function storyFilter() {
+    var checks = document.querySelectorAll("input[type='checkbox']:checked");
+    let filtered_sections = [];
+    for (let i in checks) {
+        if (checks[i].checked == true) {
+            filtered_sections.push(checks[i].value);
         }
-    if (counter >= 1 ) return true
-    else return false
+    }
+    return filtered_sections;
 }
 
-$(document).ready(function(){
+function checkBoxStates() {
+    var charChecks   = validateChecks(document.querySelectorAll("input.char_box"));
+    var actionChecks = validateChecks(document.querySelectorAll("input.action_box"));
+    var placeChecks  = validateChecks(document.querySelectorAll("input.place_box"));
 
-    gInfo = loadJSONfiles()
+    return charChecks && actionChecks && placeChecks;
+}
 
-//for debug only
-/*   setTimeout (() => {
-    filtered = [gInfo.character.fanart, gInfo.place.generic, gInfo.action.generic]
-    }, 2000);
-*/
-
-$('.randomizer-btn').on('click', function(event){
-    event.preventDefault();
-    if(!checkBoxStates()){
-        $("#checkbox-error").show();
+function validateChecks(boxChecks) {
+    for (let i = 0; i < boxChecks.length; i++) {
+        if (boxChecks[i].checked) return true;
     }
-    else{
-        $("#checkbox-error").hide();
-        filtered = storyFilter();
-        //console.log(storyFilter());
-        story = generateStory(storyFilter());
-        $(".generated-story").text(story)
-        console.log(story);}
+    return false;
+}
+
+$(document).ready(function () {
+    gInfo = loadJSONfiles();
+
+    $('.randomizer-btn').on('click', function (event) {
+        event.preventDefault();
+        if (!checkBoxStates()) {
+            $("#checkbox-error").show();
+        } else {
+            $("#checkbox-error").hide();
+            var story = generateStory(storyFilter());
+            $(".generated-story").text(story);
+            $("#result-box").addClass("visible");
+        }
     });
 });
