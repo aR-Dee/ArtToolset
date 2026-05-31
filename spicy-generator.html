@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>SPICY Generator – Art Toolset</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="cover.css">
+    <style>
+      :root {
+        --mood:      #F8A8B9;
+        --tone:      #C2262D;
+        --character: #7D5BA6;
+        --action:    #F2B200;
+        --fetish:    #e0e0e0;
+        --setting:   #3CA67A;
+      }
+
+      .cover-container { max-width: 72em; }
+
+      /* ── Result sentence ── */
+      #result-box {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        padding: 1.6rem 2rem;
+        font-size: 1.35rem;
+        line-height: 1.7;
+        min-height: 5rem;
+        margin: 1.8rem 0 1rem;
+        display: none;
+      }
+      #result-box.visible { display: block; }
+
+      .r-mood      { color: var(--mood);      font-weight: 700; }
+      .r-tone      { color: var(--tone);      font-weight: 700; }
+      .r-character { color: var(--character); font-weight: 700; }
+      .r-action    { color: var(--action);    font-weight: 700; }
+      .r-fetish    { color: var(--fetish);    font-weight: 700; }
+      .r-setting   { color: var(--setting);   font-weight: 700; }
+
+      /* ── Category legend ── */
+      .cat-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin: 1.4rem 0 0.5rem;
+      }
+      .cat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border-radius: 999px;
+        padding: 0.22rem 0.75rem 0.22rem 0.5rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        background: rgba(255,255,255,0.07);
+        border: 1.5px solid currentColor;
+        opacity: 0.7;
+      }
+      .cat-chip .dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: currentColor;
+      }
+      .chip-mood      { color: var(--mood); }
+      .chip-tone      { color: var(--tone); }
+      .chip-character { color: var(--character); }
+      .chip-action    { color: var(--action); }
+      .chip-fetish    { color: var(--fetish); }
+      .chip-setting   { color: var(--setting); }
+
+      /* ── Individual result cards ── */
+      .dice-results {
+        display: none;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.2rem;
+      }
+      .dice-results.visible { display: flex; }
+
+      .die-card {
+        flex: 1 1 140px;
+        border-radius: 10px;
+        padding: 0.9rem 1rem;
+        background: rgba(0,0,0,0.35);
+        border: 1.5px solid currentColor;
+        min-width: 130px;
+      }
+      .die-card .die-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        opacity: 0.6;
+        margin-bottom: 0.25rem;
+      }
+      .die-card .die-value {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .die-card .die-sub {
+        font-size: 0.78rem;
+        opacity: 0.55;
+        margin-top: 0.15rem;
+      }
+      .card-mood      { color: var(--mood); }
+      .card-tone      { color: var(--tone); }
+      .card-character { color: var(--character); }
+      .card-action    { color: var(--action); }
+      .card-fetish    { color: var(--fetish); }
+      .card-setting   { color: var(--setting); }
+
+      .btn-roll {
+        background: #fff;
+        color: #222;
+        border: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 0.7rem 2.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+        margin-top: 0.5rem;
+      }
+      .btn-roll:hover { background: #e8e8e8; }
+      .btn-roll:active { transform: scale(0.97); }
+    </style>
+  </head>
+<body>
+
+<div class="cover-container d-flex w-100 h-200 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand">🔥 SPICY Generator</h3>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link" href="index.html">← Art Toolset Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main role="main" class="inner cover">
+    <h1 class="cover-heading">SPICY Character & Story Generator</h1>
+    <p class="lead">Six categories rolled into one prompt. Hit it as many times as you need. 🔥</p>
+
+    <!-- Category legend -->
+    <div class="cat-legend">
+      <span class="cat-chip chip-mood"><span class="dot"></span>Mood</span>
+      <span class="cat-chip chip-tone"><span class="dot"></span>Tone</span>
+      <span class="cat-chip chip-character"><span class="dot"></span>Character</span>
+      <span class="cat-chip chip-action"><span class="dot"></span>Action</span>
+      <span class="cat-chip chip-fetish"><span class="dot"></span>Fetish / Kink</span>
+      <span class="cat-chip chip-setting"><span class="dot"></span>Setting</span>
+    </div>
+
+    <button class="btn-roll" id="roll-btn">✨ GENERATE</button>
+
+    <!-- Sentence result -->
+    <div id="result-box"></div>
+
+    <!-- Result cards -->
+    <div class="dice-results" id="dice-cards">
+      <div class="die-card card-mood"      id="card-mood">      <div class="die-label">Mood</div>        <div class="die-value" id="val-mood"></div>      <div class="die-sub" id="sub-mood"></div></div>
+      <div class="die-card card-tone"      id="card-tone">      <div class="die-label">Tone</div>        <div class="die-value" id="val-tone"></div>      <div class="die-sub" id="sub-tone"></div></div>
+      <div class="die-card card-character" id="card-character"><div class="die-label">Character</div>   <div class="die-value" id="val-character"></div></div>
+      <div class="die-card card-action"    id="card-action">    <div class="die-label">Action</div>     <div class="die-value" id="val-action"></div></div>
+      <div class="die-card card-fetish"    id="card-fetish">    <div class="die-label">Fetish / Kink</div><div class="die-value" id="val-fetish"></div></div>
+      <div class="die-card card-setting"   id="card-setting">   <div class="die-label">Setting</div>    <div class="die-value" id="val-setting"></div>    <div class="die-sub" id="sub-setting"></div></div>
+    </div>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>App made by <a href="https://linktr.ee/deear.art">Deear Art</a>. <a href="https://github.com/aR-Dee/CharacterStoryGenerator">Git repo</a>.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+const DATA = {
+  mood: [
+    { name: "Wholesome",  sub: "Comforting, kind" },
+    { name: "Playful",    sub: "Energetic, fun" },
+    { name: "Romantic",   sub: "Loving, affectionate" },
+    { name: "Confident",  sub: "Self-assured, flirtatious" },
+    { name: "Surprised",  sub: "Astonished, amazed" },
+    { name: "Shy",        sub: "Timid, bashful" },
+  ],
+  tone: [
+    { name: "Lustful",    sub: "Raw, carnal desire and hunger" },
+    { name: "Explicit",   sub: "Graphic, dirty, unabashedly sexual" },
+    { name: "Teasing",    sub: "Building tension and anticipation" },
+    { name: "Seductive",  sub: "Proactive, alluring, and enticing" },
+    { name: "Rough",      sub: "Animalistic and physically intense" },
+    { name: "Tender",     sub: "Loving, gentle, and intimate" },
+  ],
+  character: [
+    { name: "Succubus",                article: "a" },
+    { name: "Kemonomimi",              article: "a" },
+    { name: "Servant",                 article: "a" },
+    { name: "Witch",                   article: "a" },
+    { name: "Adventurer",              article: "an" },
+    { name: "Elf",                     article: "an" },
+    { name: "Office Lady / Neighbour", article: "an" },
+    { name: "Goth",                    article: "a" },
+    { name: "Monster Girl",            article: "a" },
+    { name: "MILF",                    article: "a" },
+    { name: "Priestess / Nun",         article: "a" },
+    { name: "Own Pick",                article: "your" },
+  ],
+  action: [
+    { name: "Oral feast",     verbs: ["indulging in an", "surrendering to an", "lost in an"] },
+    { name: "Cuddling",       verbs: ["lost in", "melting into", "wrapped up in", "sinking into"] },
+    { name: "Spanking",       verbs: ["enjoying a", "savoring a", "giving in to a"] },
+    { name: "Kissing",        verbs: ["locked in a", "drowning in a", "melting into a", "surrendering to a"] },
+    { name: "Sex act",        verbs: ["engaged in a", "consumed by a", "lost in a", "indulging in a"] },
+    { name: "Toying",         verbs: ["playing with", "lost in", "teasing with", "giving in to"] },
+    { name: "Lap grinding",   verbs: ["melting into", "sinking into", "lost in", "surrendering to"] },
+    { name: "Shower / Bathe", verbs: ["sharing a", "stealing a", "savoring a"] },
+    { name: "Role-play",      verbs: ["deep in a", "consumed by a", "lost in a", "playing out a"] },
+    { name: "Striptease",     verbs: ["performing a", "losing themselves in a", "captivating with a"] },
+    { name: "Foreplay",       verbs: ["savoring", "drowning in", "lost in", "indulging in"] },
+    { name: "Edging",         verbs: ["drawn into", "trapped in", "surrendering to", "consumed by"] },
+  ],
+  fetish: [
+    "Bondage",
+    "Corruption & Tainting",
+    "Pet play",
+    "Tight Clothing",
+    "Hypnosis",
+    "Feet / High-heels",
+    "Exhibitionism",
+    "Marks & Bites",
+    "Cosplay",
+    "Sensory Play",
+    "Dom-sub",
+    "Worship",
+  ],
+  setting: [
+    { name: "Bedroom",             sub: "Classic, intimate" },
+    { name: "Dungeon",             sub: "Dark, BDSM, fantasy" },
+    { name: "Hot Spring",          sub: "Relaxing, natural, sensual" },
+    { name: "Wilderness",          sub: "Forest, beach, or campsite" },
+    { name: "Classroom / Office",  sub: "Authority dynamic" },
+    { name: "VIP Lounge",          sub: "Exclusive, secretive, powerful" },
+    { name: "Private Bath",        sub: "Luxurious bathing room" },
+    { name: "Library",             sub: "Public and hidden spaces" },
+    { name: "Attic / Loft",        sub: "Hidden, stolen moments" },
+    { name: "Altar / Ritual",      sub: "Sacred and forbidden" },
+    { name: "Tavern / Inn",        sub: "Classic fantasy social setting" },
+    { name: "Public / Risky",      sub: "Park, elevator, alleyway, train…" },
+  ],
+
+  // Randomised connective phrases
+  fetishBridge: [
+    "wrapped in", "charged with", "dripping with", "soaked in",
+    "flavored by", "touched by", "heavy with", "laced with",
+  ],
+  settingPrep: ["in the", "within the", "deep in the", "hidden away in the"],
+  toneNoun: ["undertone", "energy", "tension", "desire", "pull", "heat"],
+  toneIntro: ["with a", "carrying a", "fueled by a", "giving in to a"],
+};
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function cap(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function span(cls, text) {
+  return `<span class="${cls}">${text}</span>`;
+}
+
+document.getElementById('roll-btn').addEventListener('click', function () {
+  const mood      = pick(DATA.mood);
+  const tone      = pick(DATA.tone);
+  const character = pick(DATA.character);
+  const action    = pick(DATA.action);
+  const fetish    = pick(DATA.fetish);
+  const setting   = pick(DATA.setting);
+  const verb      = pick(action.verbs);
+  const bridge    = pick(DATA.fetishBridge);
+  const prep      = pick(DATA.settingPrep);
+  const toneNoun  = pick(DATA.toneNoun);
+  const toneIntro = pick(DATA.toneIntro);
+
+  // Build the character + mood opening
+  let opening;
+  if (character.name === "Own Pick") {
+    opening = span("r-character", "Your own character");
+  } else {
+    const articleCap = cap(character.article);
+    opening = `${articleCap} ${span("r-mood", mood.name.toLowerCase())} ${span("r-character", character.name)}`;
+  }
+
+  const sentence =
+    `${opening} ${verb} ` +
+    span("r-action", action.name.toLowerCase()) +
+    ` — ${bridge} ` +
+    span("r-fetish", fetish.toLowerCase()) +
+    ` — ${prep} ` +
+    span("r-setting", setting.name) +
+    `, ${toneIntro} ` +
+    span("r-tone", tone.name.toLowerCase()) +
+    ` ${toneNoun}.`;
+
+  const box = document.getElementById('result-box');
+  box.innerHTML = sentence;
+  box.classList.add('visible');
+
+  document.getElementById('val-mood').textContent      = mood.name;
+  document.getElementById('sub-mood').textContent      = mood.sub;
+  document.getElementById('val-tone').textContent      = tone.name;
+  document.getElementById('sub-tone').textContent      = tone.sub;
+  document.getElementById('val-character').textContent = character.name;
+  document.getElementById('val-action').textContent    = action.name;
+  document.getElementById('val-fetish').textContent    = fetish;
+  document.getElementById('val-setting').textContent   = setting.name;
+  document.getElementById('sub-setting').textContent   = setting.sub;
+
+  document.getElementById('dice-cards').classList.add('visible');
+});
+</script>
+</body>
+</html>
