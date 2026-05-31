@@ -2,7 +2,7 @@
 
 Free to use and spark your ideas to draw or whatever really :D
 
-check URL - https://ar-dee.github.io/CharacterStoryGenerator/
+check URL - https://ar-dee.github.io/ArtToolset/
 
 ## OR
 
