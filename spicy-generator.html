@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>SPICY Generator – Art Toolset</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="cover.css">
+    <style>
+      :root {
+        --mood:      #F8A8B9;
+        --tone:      #C2262D;
+        --character: #7D5BA6;
+        --action:    #F2B200;
+        --fetish:    #e0e0e0;
+        --setting:   #3CA67A;
+      }
+
+      .cover-container { max-width: 72em; }
+
+      /* ── Result sentence ── */
+      #result-box {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        padding: 1.6rem 2rem;
+        font-size: 1.35rem;
+        line-height: 1.7;
+        min-height: 5rem;
+        margin: 1.8rem 0 1rem;
+        display: none;
+      }
+      #result-box.visible { display: block; }
+
+      .r-mood      { color: var(--mood);      font-weight: 700; }
+      .r-tone      { color: var(--tone);      font-weight: 700; }
+      .r-character { color: var(--character); font-weight: 700; }
+      .r-action    { color: var(--action);    font-weight: 700; }
+      .r-fetish    { color: var(--fetish);    font-weight: 700; }
+      .r-setting   { color: var(--setting);   font-weight: 700; }
+
+      /* ── Category legend ── */
+      .cat-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin: 1.4rem 0 0.5rem;
+      }
+      .cat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border-radius: 999px;
+        padding: 0.22rem 0.75rem 0.22rem 0.5rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        background: rgba(255,255,255,0.07);
+        border: 1.5px solid currentColor;
+        opacity: 0.7;
+      }
+      .cat-chip .dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: currentColor;
+      }
+      .chip-mood      { color: var(--mood); }
+      .chip-tone      { color: var(--tone); }
+      .chip-character { color: var(--character); }
+      .chip-action    { color: var(--action); }
+      .chip-fetish    { color: var(--fetish); }
+      .chip-setting   { color: var(--setting); }
+
+      /* ── Individual result cards ── */
+      .dice-results {
+        display: none;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.2rem;
+      }
+      .dice-results.visible { display: flex; }
+
+      .die-card {
+        flex: 1 1 140px;
+        border-radius: 10px;
+        padding: 0.9rem 1rem;
+        background: rgba(0,0,0,0.35);
+        border: 1.5px solid currentColor;
+        min-width: 130px;
+      }
+      .die-card .die-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        opacity: 0.6;
+        margin-bottom: 0.25rem;
+      }
+      .die-card .die-value {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .die-card .die-sub {
+        font-size: 0.78rem;
+        opacity: 0.55;
+        margin-top: 0.15rem;
+      }
+      .card-mood      { color: var(--mood); }
+      .card-tone      { color: var(--tone); }
+      .card-character { color: var(--character); }
+      .card-action    { color: var(--action); }
+      .card-fetish    { color: var(--fetish); }
+      .card-setting   { color: var(--setting); }
+
+      .btn-roll {
+        background: #fff;
+        color: #222;
+        border: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 0.7rem 2.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+        margin-top: 0.5rem;
+      }
+      .btn-roll:hover { background: #e8e8e8; }
+      .btn-roll:active { transform: scale(0.97); }
+    </style>
+  </head>
+<body>
+
+<div class="cover-container d-flex w-100 h-200 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand">🔥 SPICY Generator</h3>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link" href="index.html">← Art Toolset Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main role="main" class="inner cover">
+    <h1 class="cover-heading">SPICY Character & Story Generator</h1>
+    <p class="lead">Six categories rolled into one prompt. Hit it as many times as you need. 🔥</p>
+
+    <!-- Category legend -->
+    <div class="cat-legend">
+      <span class="cat-chip chip-mood"><span class="dot"></span>Mood</span>
+      <span class="cat-chip chip-tone"><span class="dot"></span>Tone</span>
+      <span class="cat-chip chip-character"><span class="dot"></span>Character</span>
+      <span class="cat-chip chip-action"><span class="dot"></span>Action</span>
+      <span class="cat-chip chip-fetish"><span class="dot"></span>Fetish / Kink</span>
+      <span class="cat-chip chip-setting"><span class="dot"></span>Setting</span>
+    </div>
+
+    <button class="btn-roll" id="roll-btn">✨ GENERATE</button>
+
+    <!-- Sentence result -->
+    <div id="result-box"></div>
+
+    <!-- Result cards -->
+    <div class="dice-results" id="dice-cards">
+      <div class="die-card card-mood"      id="card-mood">      <div class="die-label">Mood</div>        <div class="die-value" id="val-mood"></div>      <div class="die-sub" id="sub-mood"></div></div>
+      <div class="die-card card-tone"      id="card-tone">      <div class="die-label">Tone</div>        <div class="die-value" id="val-tone"></div>      <div class="die-sub" id="sub-tone"></div></div>
+      <div class="die-card card-character" id="card-character"><div class="die-label">Character</div>   <div class="die-value" id="val-character"></div><div class="die-sub" id="sub-character"></div></div>
+      <div class="die-card card-action"    id="card-action">    <div class="die-label">Action</div>     <div class="die-value" id="val-action"></div>    <div class="die-sub" id="sub-action"></div></div>
+      <div class="die-card card-fetish"    id="card-fetish">    <div class="die-label">Fetish / Kink</div><div class="die-value" id="val-fetish"></div><div class="die-sub" id="sub-fetish"></div></div>
+      <div class="die-card card-setting"   id="card-setting">   <div class="die-label">Setting</div>    <div class="die-value" id="val-setting"></div>    <div class="die-sub" id="sub-setting"></div></div>
+    </div>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>App made by <a href="https://beacons.ai/deear">Deear Art</a>.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+const DATA = {
+  mood: [
+    { name: "Wholesome",    sub: "Comforting, kind" },
+    { name: "Playful",      sub: "Energetic, fun" },
+    { name: "Romantic",     sub: "Loving, affectionate" },
+    { name: "Confident",    sub: "Self-assured, flirtatious" },
+    { name: "Surprised",    sub: "Astonished, caught off guard" },
+    { name: "Shy",          sub: "Timid, bashful" },
+    { name: "Innocent",     sub: "Pure, naive, unaware" },
+    { name: "Melancholic",  sub: "Wistful, bittersweet longing" },
+    { name: "Desperate",    sub: "Urgent, hungry, breathless need" },
+    { name: "Dominant",     sub: "Commanding, in control" },
+    { name: "Submissive",   sub: "Yielding, obedient, eager to please" },
+    { name: "Mischievous",  sub: "Cheeky, scheming, a little dangerous" },
+    { name: "Dreamy",       sub: "Hazy, otherworldly, half-lost" },
+  ],
+  tone: [
+    { name: "Lustful",      sub: "Raw, carnal desire and hunger" },
+    { name: "Explicit",     sub: "Graphic, dirty, unabashedly sexual" },
+    { name: "Teasing",      sub: "Building tension and anticipation" },
+    { name: "Seductive",    sub: "Proactive, alluring, and enticing" },
+    { name: "Rough",        sub: "Animalistic and physically intense" },
+    { name: "Tender",       sub: "Loving, gentle, and intimate" },
+    { name: "Taboo",        sub: "Forbidden, transgressive, thrilling" },
+    { name: "Passionate",   sub: "Deeply felt, emotionally charged" },
+    { name: "Possessive",   sub: "Claiming, jealous, all-consuming" },
+    { name: "Worshipful",   sub: "Reverent, adoring, devoted" },
+  ],
+  // article omitted — computed at runtime from the mood word
+  character: [
+    { name: "Succubus",      sub: "Seductive demon, born to tempt" },
+    { name: "Kemonomimi",    sub: "Animal-eared girl, playful and wild" },
+    { name: "Servant",       sub: "Devoted, obedient, eager to please" },
+    { name: "Maid",          sub: "Uniformed, domestic, eager to serve" },
+    { name: "Witch",         sub: "Magical and mysterious, commanding" },
+    { name: "Adventurer",    sub: "Bold and experienced, worldly" },
+    { name: "Elf",           sub: "Graceful, ethereal, long-lived" },
+    { name: "Dark Elf",      sub: "Edgy, rebellious, wild magic" },
+    { name: "Office Lady",   sub: "Professional exterior, hidden desires" },
+    { name: "Neighbour",     sub: "Familiar yet forbidden, next door" },
+    { name: "Goth",          sub: "Dark aesthetic, intense and sensual" },
+    { name: "Monster Girl",  sub: "Non-human features, otherworldly appeal" },
+    { name: "MILF",          sub: "Experienced, mature, confident" },
+    { name: "Priestess",     sub: "Devoted to the divine, pure yet passionate" },
+    { name: "Nun",           sub: "Vowed to celibacy, forbidden fruit" },
+    { name: "Vampire",       sub: "Immortal predator, dark seduction" },
+    { name: "Kunoichi",      sub: "Female ninja, deadly and alluring" },
+    { name: "Valkyrie",      sub: "Divine warrior, fierce and powerful" },
+    { name: "Angel",         sub: "Heavenly and pure — or fallen" },
+    { name: "Noble Lady",    sub: "Aristocratic grace, hidden fire" },
+    { name: "Idol",          sub: "Adored performer, untouchable yet desired" },
+    { name: "Own Pick",      sub: "Your character, your rules" },
+  ],
+  // noun = how the action reads in the sentence; verbs have no article baked in
+  action: [
+    { name: "Oral feast",      sub: "Giving or receiving oral pleasure",           noun: "an oral feast",      verbs: ["lost in", "indulging in", "surrendering to", "consumed by"] },
+    { name: "Cuddling",        sub: "Intimate skin-to-skin closeness",             noun: "cuddling",           verbs: ["lost in", "melting into", "wrapped up in", "surrendering to"] },
+    { name: "Spanking",        sub: "Impact play — hand, paddle, or belt",         noun: "a spanking",         verbs: ["savoring", "giving in to", "melting under", "consumed by"] },
+    { name: "Kissing",         sub: "From tender pecks to deep, hungry kisses",    noun: "a kiss",             verbs: ["lost in", "drowning in", "melting into", "surrendering to"] },
+    { name: "Lovemaking",      sub: "Full passionate sex",                         noun: "lovemaking",         verbs: ["lost in", "consumed by", "indulging in", "surrendering to"] },
+    { name: "Toying",          sub: "Pleasure with a sex toy",                     noun: "toying",             verbs: ["lost in", "savoring", "indulging in", "giving in to"] },
+    { name: "Lap grinding",    sub: "Non-penetrative friction and pressure",       noun: "lap grinding",       verbs: ["lost in", "melting into", "surrendering to", "consumed by"] },
+    { name: "Shower",          sub: "Wet, warm, hands everywhere",                 noun: "a shower",           verbs: ["sharing", "savoring", "stealing", "lost in"] },
+    { name: "Bathing",         sub: "Languid, luxurious, soaking together",        noun: "a bath",             verbs: ["sharing", "melting into", "savoring", "lost in"] },
+    { name: "Role-play",       sub: "Acting out a scenario or fantasy",            noun: "a role-play",        verbs: ["deep in", "consumed by", "lost in", "playing out"] },
+    { name: "Striptease",      sub: "A slow, deliberate reveal",                   noun: "a striptease",       verbs: ["captivating with", "performing", "savoring", "lost in"] },
+    { name: "Foreplay",        sub: "All the delicious build-up before the act",   noun: "foreplay",           verbs: ["savoring", "lost in", "drowning in", "indulging in"] },
+    { name: "Edging",          sub: "Controlling, delaying, or denying orgasm",    noun: "edging",             verbs: ["drawn into", "trapped in", "surrendering to", "consumed by"] },
+    { name: "Massage",         sub: "Hands exploring every tense, sensitive spot", noun: "a massage",          verbs: ["savoring", "melting into", "lost in", "surrendering to"] },
+    { name: "Erotic dance",    sub: "Movement as seduction — sensual, hypnotic",   noun: "an erotic dance",    verbs: ["captivating with", "lost in", "savoring", "consumed by"] },
+    { name: "Undressing",      sub: "The slow, charged removal of clothing",       noun: "undressing",         verbs: ["savoring", "lost in", "indulging in", "consumed by"] },
+    { name: "Body worship",    sub: "Devoted attention to every inch of skin",     noun: "body worship",       verbs: ["lost in", "indulging in", "surrendering to", "consumed by"] },
+    { name: "Handholding",     sub: "Deceptively intimate, loaded with tension",   noun: "handholding",        verbs: ["lost in", "savoring", "melting into", "wrapped up in"] },
+  ],
+  // phrase = how the fetish reads after a bridge word; sub shows on the card
+  fetish: [
+    { name: "Bondage",             sub: "Restraint with rope, cuffs, or fabric",           phrase: "bondage" },
+    { name: "Corruption",          sub: "Slowly tainting the pure or innocent",            phrase: "corruption and tainting" },
+    { name: "Pet play",            sub: "One partner takes on a pet persona",               phrase: "pet play" },
+    { name: "Tight Clothing",      sub: "Constraint and silhouette as arousal",            phrase: "tight clothing" },
+    { name: "Hypnosis",            sub: "Mind control, trance, and suggestion",            phrase: "hypnosis" },
+    { name: "Feet",                sub: "Foot focus, worship, or teasing",                 phrase: "feet worship" },
+    { name: "High-heels",          sub: "Power, posture, and the click of a heel",         phrase: "high-heels" },
+    { name: "Exhibitionism",       sub: "Thrill of being seen or discovered",              phrase: "exhibitionism" },
+    { name: "Marks & Bites",       sub: "Leaving visible traces of passion",              phrase: "marks and bites" },
+    { name: "Cosplay",             sub: "Erotic roleplay in full costume",                 phrase: "cosplay" },
+    { name: "Sensory Play",        sub: "Heightening senses — ice, wax, feathers…",       phrase: "sensory play" },
+    { name: "Sensory Deprivation", sub: "Blindfolds and earplugs to intensify touch",     phrase: "sensory deprivation" },
+    { name: "Dom-sub",             sub: "Consensual power exchange dynamic",               phrase: "dom-sub dynamics" },
+    { name: "Worship",             sub: "Devoted reverence toward a person or body",       phrase: "worship" },
+    { name: "Orgasm Control",      sub: "Controlling, denying, or timing climax",          phrase: "orgasm control" },
+    { name: "Voyeurism",           sub: "Arousal from watching, unseen or acknowledged",  phrase: "voyeurism" },
+    { name: "Dirty Talk",          sub: "Words as a weapon — whispered or demanded",      phrase: "dirty talk" },
+    { name: "Role Reversal",       sub: "Flipping the expected power dynamic",            phrase: "role reversal" },
+    { name: "Size difference",     sub: "Height or body-size contrast as dynamic",        phrase: "size difference" },
+    { name: "Scent & Taste",       sub: "Intoxication through raw, physical senses",      phrase: "scent and taste" },
+    { name: "Uniforms",            sub: "Arousal tied to authority or service attire",    phrase: "uniforms" },
+  ],
+  setting: [
+    { name: "Bedroom",        inSentence: "the bedroom",           sub: "Classic, intimate" },
+    { name: "Dungeon",        inSentence: "a dungeon",             sub: "Dark, BDSM, fantasy" },
+    { name: "Hot Spring",     inSentence: "a hot spring",          sub: "Relaxing, natural, sensual" },
+    { name: "Wilderness",     inSentence: "the wilderness",        sub: "Forest, beach, or campsite" },
+    { name: "Classroom",      inSentence: "a classroom",           sub: "Authority and power dynamic" },
+    { name: "Office",         inSentence: "an office",             sub: "Professional tension after hours" },
+    { name: "VIP Lounge",     inSentence: "a VIP lounge",          sub: "Exclusive, secretive, powerful" },
+    { name: "Private Bath",   inSentence: "a private bath",        sub: "Luxurious, steam-filled, secluded" },
+    { name: "Library",        inSentence: "a library",             sub: "Quiet corners and hidden alcoves" },
+    { name: "Attic",          inSentence: "an attic",              sub: "Dusty, secret, stolen moments" },
+    { name: "Loft",           inSentence: "a loft",                sub: "Open, warm light, exposed brickwork" },
+    { name: "Altar",          inSentence: "a ritual altar",        sub: "Sacred, forbidden, charged with power" },
+    { name: "Ritual Space",   inSentence: "a ritual space",        sub: "Candles, symbols, transgressive intent" },
+    { name: "Tavern",         inSentence: "a tavern",              sub: "Classic fantasy — rowdy or private" },
+    { name: "Inn",            inSentence: "an inn",                sub: "A rented room, far from home" },
+    { name: "Public Space",   inSentence: "a risky public spot",   sub: "Park, elevator, alleyway, train…" },
+    { name: "Rooftop",        inSentence: "a rooftop",             sub: "Open sky, city lights, dizzying height" },
+    { name: "Abandoned Place",inSentence: "an abandoned building", sub: "Decay, dust, and forbidden privacy" },
+    { name: "Garden",         inSentence: "a moonlit garden",      sub: "Night air, blooms, hidden from view" },
+    { name: "Castle",         inSentence: "a castle",              sub: "Nobility, stone walls, old power" },
+    { name: "Onsen",          inSentence: "an onsen",              sub: "Traditional Japanese hot bath, secluded" },
+  ],
+
+  // Randomised connective phrases — every entry must work with every fetish phrase
+  fetishBridge: [
+    "wrapped in", "charged with", "laced with", "touched by",
+    "heavy with", "steeped in", "suffused with", "tinged with",
+    "flavored by", "underscored by", "electric with", "alive with",
+  ],
+  // every entry must work before any inSentence value (a/an/the + place)
+  settingPrep: [
+    "in", "within", "deep in", "hidden away in",
+    "tucked away in", "stolen away to", "locked away in",
+    "alone in", "somewhere inside", "nestled in",
+  ],
+  // every entry must work as "[a/an] [tone] ___"
+  toneNoun: [
+    "undertone", "energy", "tension", "desire", "pull", "heat",
+    "edge", "hunger", "ache", "charge", "undercurrent", "fever", "weight",
+  ],
+  // articles stripped — computed at runtime so "explicit" gets "an" correctly
+  // every entry must work as "___ [a/an] [tone] [toneNoun]"
+  toneIntro: [
+    "with", "carrying", "fueled by", "bathed in",
+    "marked by", "trembling with", "drowning in", "humming with", "pulsing with",
+  ],
+};
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function cap(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function span(cls, text) {
+  return `<span class="${cls}">${text}</span>`;
+}
+
+document.getElementById('roll-btn').addEventListener('click', function () {
+  const mood      = pick(DATA.mood);
+  const tone      = pick(DATA.tone);
+  const character = pick(DATA.character);
+  const action    = pick(DATA.action);
+  const fetish    = pick(DATA.fetish);
+  const setting   = pick(DATA.setting);
+  const verb      = pick(action.verbs);
+  const bridge    = pick(DATA.fetishBridge);
+  const prep      = pick(DATA.settingPrep);
+  const toneNoun  = pick(DATA.toneNoun);
+  const toneIntro = pick(DATA.toneIntro);
+
+  // Articles computed from the word that follows them
+  const article     = /^[aeiou]/i.test(mood.name) ? 'An' : 'A';
+  const toneArticle = /^[aeiou]/i.test(tone.name) ? 'an' : 'a';
+
+  // Build the character + mood opening
+  let opening;
+  if (character.name === "Own Pick") {
+    opening = span("r-character", "Your own character");
+  } else {
+    opening = `${article} ${span("r-mood", mood.name.toLowerCase())} ${span("r-character", character.name)}`;
+  }
+
+  const sentence =
+    `${opening} — ${verb} ` +
+    span("r-action", action.noun) +
+    ` — ${bridge} ` +
+    span("r-fetish", fetish.phrase) +
+    `, ${prep} ` +
+    span("r-setting", setting.inSentence) +
+    `, ${toneIntro} ${toneArticle} ` +
+    span("r-tone", tone.name.toLowerCase()) +
+    ` ${toneNoun}.`;
+
+  const box = document.getElementById('result-box');
+  box.innerHTML = sentence;
+  box.classList.add('visible');
+
+  document.getElementById('val-mood').textContent      = mood.name;
+  document.getElementById('sub-mood').textContent      = mood.sub;
+  document.getElementById('val-tone').textContent      = tone.name;
+  document.getElementById('sub-tone').textContent      = tone.sub;
+  document.getElementById('val-character').textContent = character.name;
+  document.getElementById('sub-character').textContent = character.sub;
+  document.getElementById('val-action').textContent    = action.name;
+  document.getElementById('sub-action').textContent    = action.sub;
+  document.getElementById('val-fetish').textContent    = fetish.name;
+  document.getElementById('sub-fetish').textContent    = fetish.sub || '';
+  document.getElementById('val-setting').textContent   = setting.name;
+  document.getElementById('sub-setting').textContent   = setting.sub;
+
+  document.getElementById('dice-cards').classList.add('visible');
+});
+</script>
+</body>
+</html>
