@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Challenge Dice &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root {
+    --accent: #ff6b6b;
+    --cliche: #ffb37a;
+    --twist:  #6bffd1;
+  }
+  .filter-label.lbl-genre { color: var(--accent); }
+
+  .die-row { display: flex; gap: 0.75rem; margin: 1.8rem 0 1rem; flex-wrap: wrap; }
+  .die-box {
+    flex: 1 1 260px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.3rem 1.5rem;
+  }
+  .die-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .die-tag.cliche { color: var(--cliche); }
+  .die-tag.twist  { color: var(--twist); }
+  .die-text { font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap wrap-narrow">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">Art Challenge Dice</div>
+    <h1 class="page-title">Art Challenge<em> Dice</em></h1>
+    <p class="page-lead">Rolls a familiar genre clich&eacute; &mdash; then a twist directive that dares you to subvert it. Good for breaking out of the obvious version of an idea.</p>
+  </header>
+
+  <div class="form-error" id="checkbox-error">At least one genre must be checked.</div>
+
+  <button class="btn btn-primary" id="roll-btn">&#127922; ROLL</button>
+
+  <div class="die-row" id="die-row" style="display:none;">
+    <div class="die-box">
+      <div class="die-tag cliche">The Clich&eacute;</div>
+      <div class="die-text" id="cliche-text"></div>
+    </div>
+    <div class="die-box">
+      <div class="die-tag twist">Your Twist</div>
+      <div class="die-text" id="twist-text"></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="filter-row">
+    <div class="filter-group">
+      <div class="filter-label lbl-genre">Genre Pool</div>
+      <button class="toggle-all" data-group="genre_box">all / none</button>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="fantasy" checked><span class="check-box"></span> Fantasy</label>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="scifi" checked><span class="check-box"></span> Sci-Fi</label>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="horror" checked><span class="check-box"></span> Horror</label>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="romance" checked><span class="check-box"></span> Romance</label>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="superhero" checked><span class="check-box"></span> Superhero</label>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="fairytale" checked><span class="check-box"></span> Fairy Tale</label>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="noir" checked><span class="check-box"></span> Noir / Detective</label>
+      <label class="check-item"><input type="checkbox" class="genre_box" value="sliceoflife" checked><span class="check-box"></span> Slice of Life</label>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var cliches = {
+    fantasy: [
+      'A chosen one wields a legendary sword to defeat an ancient evil.',
+      'A young farmhand discovers they have royal blood and a great destiny.',
+      'A wise old wizard mentors the hero before conveniently dying.',
+      'A dragon hoards treasure in a mountain and terrorizes a kingdom.'
+    ],
+    scifi: [
+      'A rogue AI turns against the humans who built it.',
+      'A lone astronaut is stranded and must survive against the odds.',
+      'A corporation controls a dystopian future city with an iron grip.',
+      'A clone discovers they are not the original and questions their identity.'
+    ],
+    horror: [
+      'A haunted doll terrorizes a family in their new house.',
+      'A group of teens splits up in the woods and gets picked off one by one.',
+      'A cursed object brings misfortune to whoever possesses it.',
+      'A monster hides just out of sight, only seen in glimpses.'
+    ],
+    romance: [
+      'Two rivals are forced to work together and slowly fall for each other.',
+      'Childhood friends realize their feelings only after one of them leaves.',
+      'A love triangle forces the protagonist to choose between two suitors.',
+      'Star-crossed lovers are kept apart by their feuding families.'
+    ],
+    superhero: [
+      'A reluctant hero gains powers and must learn to use them to save the city.',
+      'A masked vigilante works outside the law to deliver justice.',
+      'A superhero hides their identity from the people they love most.',
+      'A once-heroic figure turns villain after a personal tragedy.'
+    ],
+    fairytale: [
+      'A princess is rescued from a tower by a brave knight.',
+      'A poor orphan is revealed to be secretly royal all along.',
+      'A wicked stepmother torments a kind-hearted protagonist.',
+      'A curse can only be broken by true love’s kiss.'
+    ],
+    noir: [
+      'A hard-boiled detective is hired by a mysterious femme fatale.',
+      'A world-weary investigator narrates the case in a gravelly inner monologue.',
+      'Every lead turns out to connect back to the city’s corrupt elite.',
+      'The detective falls for the one person they shouldn’t trust.'
+    ],
+    sliceoflife: [
+      'A new kid at school struggles to fit in and finds an unlikely friend.',
+      'An overworked character learns to slow down after a chance encounter.',
+      'A group of friends spends one last ordinary summer together before growing apart.',
+      'A quiet shopkeeper’s daily routine is gently upended by a new regular customer.'
+    ]
+  };
+
+  var twists = [
+    'Make the "villain" the most sympathetic character in the scene.',
+    'Swap the power dynamic between the two leads.',
+    'Set it in a completely different era or location than expected.',
+    'Tell it from the side character’s point of view instead.',
+    'Replace the expected tool, weapon, or method with something mundane.',
+    'Give the "chosen one" role to whoever seems least suited for it.',
+    'Make the happy ending bittersweet instead.',
+    'Combine this with a second, unrelated genre in the same scene.',
+    'Make the "monster" the one who is actually afraid.',
+    'Have the hero fail at the obvious solution and need a different one entirely.',
+    'Age every character up or down by twenty years.',
+    'Tell the story with the "camera" fixed on a background character throughout.'
+  ];
+
+  function checkedValues(cls) {
+    return Array.from(document.querySelectorAll('input.' + cls + ':checked')).map(function (el) { return el.value; });
+  }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function roll() {
+    var genres = checkedValues('genre_box');
+    var err = document.getElementById('checkbox-error');
+    if (!genres.length) { err.style.display = 'block'; return; }
+    err.style.display = 'none';
+
+    var genre = pick(genres);
+    var cliche = pick(cliches[genre]);
+    var twist = pick(twists);
+
+    document.getElementById('cliche-text').textContent = cliche;
+    document.getElementById('twist-text').textContent = twist;
+    document.getElementById('die-row').style.display = 'flex';
+  }
+
+  document.getElementById('roll-btn').addEventListener('click', roll);
+  document.querySelectorAll('.toggle-all').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var boxes = document.querySelectorAll('input.' + btn.dataset.group);
+      var allChecked = Array.from(boxes).every(function (b) { return b.checked; });
+      boxes.forEach(function (b) { b.checked = !allChecked; });
+    });
+  });
+
+  roll();
+})();
+</script>
+</body>
+</html>

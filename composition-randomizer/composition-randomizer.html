@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Composition Randomizer &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root { --accent: #7fd4ff; }
+
+  .layout { display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: flex-start; margin: 1.5rem 0; }
+
+  .grid-wrap { flex: 0 0 auto; }
+  .grid-frame {
+    width: 240px; height: 240px;
+    border: 2px solid var(--border2);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .grid-cell { border: 1px dashed var(--border); position: relative; }
+  .grid-cell.hot {
+    background: radial-gradient(circle at center, var(--accent) 0%, rgba(126,212,255,0.0) 72%);
+  }
+  .grid-cell.hot::after {
+    content: '';
+    position: absolute; inset: 0;
+    margin: auto;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    top: 0; bottom: 0; left: 0; right: 0;
+  }
+
+  .facts { flex: 1 1 280px; min-width: 240px; }
+  .fact-row { margin-bottom: 1.3rem; }
+  .fact-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .fact-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="wrap wrap-narrow">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">Composition Randomizer</div>
+    <h1 class="page-title">Composition<em> Roller</em></h1>
+    <p class="page-lead">Rolls a camera angle, a shot type, and a framing rule, then marks a focal point on a 3&times;3 grid. Use it to break out of your default composition habits.</p>
+  </header>
+
+  <button class="btn btn-primary" id="roll-btn">&#10024; SHUFFLE</button>
+
+  <div class="layout">
+    <div class="grid-wrap">
+      <div class="grid-frame" id="grid-frame"></div>
+    </div>
+    <div class="facts">
+      <div class="fact-row">
+        <div class="fact-label">Camera Angle</div>
+        <div class="fact-value" id="f-angle">&mdash;</div>
+      </div>
+      <div class="fact-row">
+        <div class="fact-label">Shot Type</div>
+        <div class="fact-value" id="f-shot">&mdash;</div>
+      </div>
+      <div class="fact-row">
+        <div class="fact-label">Framing Rule</div>
+        <div class="fact-value" id="f-rule">&mdash;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var angles = ['Eye level', 'Low angle (looking up)', 'High angle (looking down)', "Bird's eye view", "Worm's eye view", 'Dutch tilt', 'Over-the-shoulder'];
+  var shots = ['Extreme close-up', 'Close-up', 'Medium shot', 'Full body shot', 'Wide / establishing shot', 'Two-shot (two subjects)'];
+  var rules = [
+    'Rule of thirds &mdash; subject on an intersection',
+    'Centered &amp; symmetrical',
+    'Heavy negative space',
+    'Framed by foreground elements',
+    'Leading lines toward the subject',
+    'Fill the frame edge-to-edge',
+    'Golden spiral placement'
+  ];
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function buildGrid() {
+    var frame = document.getElementById('grid-frame');
+    frame.innerHTML = '';
+    for (var i = 0; i < 9; i++) {
+      var cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      cell.dataset.idx = i;
+      frame.appendChild(cell);
+    }
+  }
+
+  function roll() {
+    document.getElementById('f-angle').innerHTML = pick(angles);
+    document.getElementById('f-shot').innerHTML = pick(shots);
+    document.getElementById('f-rule').innerHTML = pick(rules);
+
+    var cells = document.querySelectorAll('.grid-cell');
+    cells.forEach(function (c) { c.classList.remove('hot'); });
+    var hotIdx = Math.floor(Math.random() * 9);
+    cells[hotIdx].classList.add('hot');
+  }
+
+  document.getElementById('roll-btn').addEventListener('click', roll);
+
+  buildGrid();
+  roll();
+})();
+</script>
+</body>
+</html>

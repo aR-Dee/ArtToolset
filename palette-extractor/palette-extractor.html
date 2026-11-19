@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palette Extractor &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root { --accent: #a8dfc4; }
+
+  .dropzone {
+    border: 2px dashed var(--border2);
+    border-radius: 14px;
+    padding: 2.4rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: var(--muted2);
+    transition: border-color .15s, background .15s;
+    margin: 1.5rem 0;
+  }
+  .dropzone:hover, .dropzone.drag { border-color: var(--accent); background: rgba(168,223,196,0.06); }
+  .dropzone input { display: none; }
+  .dropzone .big { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .dropzone .small { font-size: 12px; }
+
+  .preview-wrap {
+    display: none;
+    gap: 1.6rem;
+    margin: 1.2rem 0;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .preview-wrap.visible { display: flex; }
+  .preview-img-box {
+    flex: 0 0 auto;
+    max-width: 280px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .preview-img-box img { display: block; max-width: 100%; }
+
+  .palette-col { flex: 1 1 240px; display: flex; flex-direction: column; gap: 10px; }
+  .pal-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .pal-row:hover { border-color: var(--border2); }
+  .pal-swatch { width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); }
+  .pal-hex { font-weight: 700; font-size: 13px; }
+  .pal-pct { font-size: 11px; color: var(--muted); margin-left: auto; }
+  .pal-copied { color: var(--accent); font-size: 11px; font-weight: 700; }
+
+  canvas { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap wrap-narrow">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">Palette Extractor</div>
+    <h1 class="page-title">Palette<em> Extractor</em></h1>
+    <p class="page-lead">Drop in a reference photo, painting, or screenshot and pull out its dominant colors as a ready-to-use palette. Everything runs locally in your browser.</p>
+  </header>
+
+  <label class="dropzone" id="dropzone">
+    <input type="file" id="file-input" accept="image/*">
+    <div class="big">Click to choose an image, or drag &amp; drop it here</div>
+    <div class="small">JPG / PNG / WebP &middot; nothing leaves your browser</div>
+  </label>
+
+  <div class="preview-wrap" id="preview-wrap">
+    <div class="preview-img-box"><img id="preview-img" alt="uploaded reference"></div>
+    <div class="palette-col" id="palette-col"></div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div class="divider"></div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('file-input');
+  var previewWrap = document.getElementById('preview-wrap');
+  var previewImg = document.getElementById('preview-img');
+  var paletteCol = document.getElementById('palette-col');
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+
+  // Note: dropzone is a <label> wrapping the hidden <input>, so clicking
+  // anywhere inside it already opens the file picker natively — no extra
+  // click-forwarding needed here (that would open the dialog twice).
+  ['dragover', 'dragenter'].forEach(function (ev) {
+    dropzone.addEventListener(ev, function (e) { e.preventDefault(); dropzone.classList.add('drag'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropzone.addEventListener(ev, function (e) { e.preventDefault(); dropzone.classList.remove('drag'); });
+  });
+  dropzone.addEventListener('drop', function (e) {
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', function () {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+
+  var currentUrl = null;
+
+  function handleFile(file) {
+    if (file.type.indexOf('image/') !== 0) return;
+    if (currentUrl) URL.revokeObjectURL(currentUrl);
+    currentUrl = URL.createObjectURL(file);
+    previewImg.src = currentUrl;
+    previewImg.onload = function () { extract(previewImg); };
+    previewWrap.classList.add('visible');
+  }
+
+  function toHex(n) { var h = n.toString(16); return h.length === 1 ? '0' + h : h; }
+
+  // Simple color extraction: downscale, bucket into a coarse RGB grid, pick top buckets, average each.
+  function extract(img) {
+    var w = 80, h = Math.max(1, Math.round(80 * (img.naturalHeight / img.naturalWidth)));
+    canvas.width = w; canvas.height = h;
+    ctx.drawImage(img, 0, 0, w, h);
+    var data;
+    try {
+      data = ctx.getImageData(0, 0, w, h).data;
+    } catch (e) {
+      paletteCol.innerHTML = '<div class="small">Could not read this image (cross-origin). Try a local file instead.</div>';
+      return;
+    }
+
+    var STEP = 32; // bucket resolution per channel
+    var buckets = {};
+    for (var i = 0; i < data.length; i += 4) {
+      var a = data[i + 3];
+      if (a < 40) continue;
+      var r = data[i], g = data[i + 1], b = data[i + 2];
+      var key = Math.floor(r / STEP) + ',' + Math.floor(g / STEP) + ',' + Math.floor(b / STEP);
+      if (!buckets[key]) buckets[key] = { r: 0, g: 0, b: 0, n: 0 };
+      buckets[key].r += r; buckets[key].g += g; buckets[key].b += b; buckets[key].n += 1;
+    }
+
+    var list = Object.keys(buckets).map(function (k) { return buckets[k]; });
+    list.sort(function (a, b) { return b.n - a.n; });
+
+    var total = list.reduce(function (s, b) { return s + b.n; }, 0);
+    var top = list.slice(0, 6);
+
+    paletteCol.innerHTML = '';
+    top.forEach(function (bucket) {
+      var r = Math.round(bucket.r / bucket.n);
+      var g = Math.round(bucket.g / bucket.n);
+      var bl = Math.round(bucket.b / bucket.n);
+      var hex = '#' + toHex(r) + toHex(g) + toHex(bl);
+      var pct = Math.round((bucket.n / total) * 100);
+
+      var row = document.createElement('div');
+      row.className = 'pal-row';
+      row.innerHTML =
+        '<div class="pal-swatch" style="background:' + hex + '"></div>' +
+        '<div class="pal-hex">' + hex.toUpperCase() + '</div>' +
+        '<div class="pal-pct">' + pct + '%</div>';
+      row.addEventListener('click', function () {
+        navigator.clipboard && navigator.clipboard.writeText(hex.toUpperCase()).catch(function () {});
+        var pctEl = row.querySelector('.pal-pct');
+        var original = pctEl.textContent;
+        pctEl.textContent = 'Copied!';
+        pctEl.classList.add('pal-copied');
+        setTimeout(function () { pctEl.textContent = original; pctEl.classList.remove('pal-copied'); }, 900);
+      });
+      paletteCol.appendChild(row);
+    });
+  }
+})();
+</script>
+</body>
+</html>

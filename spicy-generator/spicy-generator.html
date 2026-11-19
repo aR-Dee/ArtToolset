@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPICY Generator &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root {
+    --accent: #ff4d6d;
+    --mood:      #ff9fc0;
+    --tone:      #ff5a6b;
+    --character: #b98bff;
+    --action:    #ffcc4d;
+    --fetish:    #b9c2cc;
+    --setting:   #4fd39a;
+  }
+
+  .r-mood      { color: var(--mood);      font-weight: 700; }
+  .r-tone      { color: var(--tone);      font-weight: 700; }
+  .r-character { color: var(--character); font-weight: 700; }
+  .r-action    { color: var(--action);    font-weight: 700; }
+  .r-fetish    { color: var(--fetish);    font-weight: 700; }
+  .r-setting   { color: var(--setting);   font-weight: 700; }
+
+  .chip-mood      { color: var(--mood); }
+  .chip-tone      { color: var(--tone); }
+  .chip-character { color: var(--character); }
+  .chip-action    { color: var(--action); }
+  .chip-fetish    { color: var(--fetish); }
+  .chip-setting   { color: var(--setting); }
+
+  .stat-mood      { color: var(--mood); }
+  .stat-tone      { color: var(--tone); }
+  .stat-character { color: var(--character); }
+  .stat-action    { color: var(--action); }
+  .stat-fetish    { color: var(--fetish); }
+  .stat-setting   { color: var(--setting); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">&#128293; Spicy Generator</div>
+    <h1 class="page-title">SPICY Character<em> &amp; Story</em></h1>
+    <p class="page-lead">Six categories rolled into one prompt. Hit it as many times as you need. &#128293;</p>
+  </header>
+
+  <div class="chip-row">
+    <span class="chip chip-mood"><span class="dot"></span>Mood</span>
+    <span class="chip chip-tone"><span class="dot"></span>Tone</span>
+    <span class="chip chip-character"><span class="dot"></span>Character</span>
+    <span class="chip chip-action"><span class="dot"></span>Action</span>
+    <span class="chip chip-fetish"><span class="dot"></span>Fetish / Kink</span>
+    <span class="chip chip-setting"><span class="dot"></span>Setting</span>
+  </div>
+
+  <button class="btn btn-primary" id="roll-btn">&#10024; GENERATE</button>
+
+  <!-- Sentence result -->
+  <div id="result-box" class="result-box"></div>
+
+  <!-- Result cards -->
+  <div class="stat-cards" id="dice-cards">
+    <div class="stat-card stat-mood">      <div class="stat-label">Mood</div>        <div class="stat-value" id="val-mood"></div>        <div class="stat-sub" id="sub-mood"></div></div>
+    <div class="stat-card stat-tone">      <div class="stat-label">Tone</div>        <div class="stat-value" id="val-tone"></div>        <div class="stat-sub" id="sub-tone"></div></div>
+    <div class="stat-card stat-character"><div class="stat-label">Character</div>   <div class="stat-value" id="val-character"></div><div class="stat-sub" id="sub-character"></div></div>
+    <div class="stat-card stat-action">    <div class="stat-label">Action</div>     <div class="stat-value" id="val-action"></div>    <div class="stat-sub" id="sub-action"></div></div>
+    <div class="stat-card stat-fetish">    <div class="stat-label">Fetish / Kink</div><div class="stat-value" id="val-fetish"></div><div class="stat-sub" id="sub-fetish"></div></div>
+    <div class="stat-card stat-setting">   <div class="stat-label">Setting</div>    <div class="stat-value" id="val-setting"></div>    <div class="stat-sub" id="sub-setting"></div></div>
+  </div>
+
+  <footer class="site-footer">
+    <span>Please be mindful &mdash; this is still a work in progress :D</span>
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script src="spicy-randomizer.js"></script>
+</body>
+</html>

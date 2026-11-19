@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palette Roller &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root { --accent: #6ee7c4; }
+
+  .mode-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.4rem 0 1.6rem; }
+  .mode-chip {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    color: var(--muted2);
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .mode-chip:hover { color: var(--text); border-color: var(--muted); }
+  .mode-chip.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  .palette-row {
+    display: flex;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin: 0.5rem 0 1.5rem;
+    min-height: 160px;
+  }
+  .swatch {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+    transition: flex-grow .2s;
+  }
+  .swatch:hover { flex-grow: 1.4; }
+  .swatch-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    padding: 6px 4px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(2px);
+  }
+  .swatch-copied::after {
+    content: 'Copied!';
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #fff;
+    color: #0d0d0f;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  .hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap wrap-narrow">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">Palette Roller</div>
+    <h1 class="page-title">Palette<em> Roller</em></h1>
+    <p class="page-lead">Roll a random color palette to force a limited-palette study. Pick a harmony mode and a swatch count, then shuffle until something clicks.</p>
+  </header>
+
+  <div class="controls">
+    <div class="ctrl-block">
+      <div class="ctrl-label">Swatches</div>
+      <div class="stepper">
+        <button class="step-btn" id="count-down">&minus;</button>
+        <div class="step-val" id="count-val">5</div>
+        <button class="step-btn" id="count-up">&plus;</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="roll-btn">&#10024; SHUFFLE</button>
+  </div>
+
+  <div class="mode-row" id="mode-row">
+    <button class="mode-chip active" data-mode="random">Random</button>
+    <button class="mode-chip" data-mode="mono">Monochrome</button>
+    <button class="mode-chip" data-mode="analogous">Analogous</button>
+    <button class="mode-chip" data-mode="complementary">Complementary</button>
+    <button class="mode-chip" data-mode="splitcomp">Split-Complementary</button>
+    <button class="mode-chip" data-mode="triadic">Triadic</button>
+  </div>
+
+  <div class="hint">Click any swatch to copy its hex code.</div>
+  <div class="palette-row" id="palette-row"></div>
+
+  <div class="divider"></div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var state = { count: 5, mode: 'random' };
+
+  var countVal = document.getElementById('count-val');
+  var paletteRow = document.getElementById('palette-row');
+  var modeRow = document.getElementById('mode-row');
+
+  document.getElementById('count-down').addEventListener('click', function () {
+    state.count = Math.max(3, state.count - 1);
+    countVal.textContent = state.count;
+    roll();
+  });
+  document.getElementById('count-up').addEventListener('click', function () {
+    state.count = Math.min(8, state.count + 1);
+    countVal.textContent = state.count;
+    roll();
+  });
+  modeRow.addEventListener('click', function (e) {
+    var btn = e.target.closest('.mode-chip');
+    if (!btn) return;
+    modeRow.querySelectorAll('.mode-chip').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    state.mode = btn.dataset.mode;
+    roll();
+  });
+  document.getElementById('roll-btn').addEventListener('click', roll);
+
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  function hslToHex(h, s, l) {
+    h = ((h % 360) + 360) % 360;
+    s /= 100; l /= 100;
+    var c = (1 - Math.abs(2 * l - 1)) * s;
+    var x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    var m = l - c / 2;
+    var r, g, b;
+    if (h < 60)      { r = c; g = x; b = 0; }
+    else if (h < 120){ r = x; g = c; b = 0; }
+    else if (h < 180){ r = 0; g = c; b = x; }
+    else if (h < 240){ r = 0; g = x; b = c; }
+    else if (h < 300){ r = x; g = 0; b = c; }
+    else             { r = c; g = 0; b = x; }
+    var toHex = function (v) {
+      var h2 = Math.round((v + m) * 255).toString(16);
+      return h2.length === 1 ? '0' + h2 : h2;
+    };
+    return '#' + toHex(r) + toHex(g) + toHex(b);
+  }
+
+  function generate(mode, count) {
+    var base = rand(0, 360);
+    var colors = [];
+    var i;
+    switch (mode) {
+      case 'mono':
+        for (i = 0; i < count; i++) {
+          colors.push(hslToHex(base, rand(35, 70), 18 + (70 / (count - 1 || 1)) * i));
+        }
+        break;
+      case 'analogous':
+        for (i = 0; i < count; i++) {
+          var spread = (i - (count - 1) / 2) * 22;
+          colors.push(hslToHex(base + spread, rand(45, 75), rand(38, 62)));
+        }
+        break;
+      case 'complementary':
+        for (i = 0; i < count; i++) {
+          var h = i % 2 === 0 ? base : base + 180;
+          colors.push(hslToHex(h + rand(-10, 10), rand(45, 80), rand(28 + i * 6, 70)));
+        }
+        break;
+      case 'splitcomp':
+        var opts = [base, base + 150, base + 210];
+        for (i = 0; i < count; i++) {
+          colors.push(hslToHex(opts[i % 3] + rand(-8, 8), rand(45, 75), rand(30, 65)));
+        }
+        break;
+      case 'triadic':
+        var tri = [base, base + 120, base + 240];
+        for (i = 0; i < count; i++) {
+          colors.push(hslToHex(tri[i % 3] + rand(-8, 8), rand(45, 75), rand(30, 65)));
+        }
+        break;
+      default: // random
+        for (i = 0; i < count; i++) {
+          colors.push(hslToHex(rand(0, 360), rand(30, 85), rand(20, 75)));
+        }
+    }
+    return colors;
+  }
+
+  function roll() {
+    var colors = generate(state.mode, state.count);
+    paletteRow.innerHTML = '';
+    colors.forEach(function (hex) {
+      var el = document.createElement('div');
+      el.className = 'swatch';
+      el.style.background = hex;
+      el.innerHTML = '<span class="swatch-label">' + hex.toUpperCase() + '</span>';
+      el.addEventListener('click', function () {
+        navigator.clipboard && navigator.clipboard.writeText(hex.toUpperCase()).catch(function () {});
+        el.classList.add('swatch-copied');
+        setTimeout(function () { el.classList.remove('swatch-copied'); }, 900);
+      });
+      paletteRow.appendChild(el);
+    });
+  }
+
+  roll();
+})();
+</script>
+</body>
+</html>

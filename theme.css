@@ -1,0 +1,367 @@
+/* ==========================================================================
+   Art Toolset — shared design system
+   Used by every tool page (home, generators, drawing warmup, and any new
+   tool added later). Each page sets its own --accent (and any tool-specific
+   category colors) in a small inline <style> block after this file loads.
+   ========================================================================== */
+
+:root {
+  --bg: #1a1a1a;
+  --surface: #242424;
+  --surface2: #2b2b2b;
+  --border: #3a3a3a;
+  --border2: #4a4a4a;
+  --text: #f0efec;
+  --muted: #9a9a9a;
+  --muted2: #c4c4c4;
+  --card: #212121;
+
+  /* Default accent — pages override this to give each tool its own identity. */
+  --accent: #d4ff47;
+  --accent-ink: #0d0d0f;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* subtle film-grain overlay, shared across all pages */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+a { color: inherit; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+  position: relative;
+  z-index: 1;
+}
+.wrap.wrap-narrow { max-width: 760px; }
+
+/* ── Back link / breadcrumb ───────────────────────────────────────── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 28px;
+  transition: color 0.15s;
+}
+.back-link:hover { color: var(--text); }
+
+/* ── Header ────────────────────────────────────────────────────────── */
+.tool-header { padding: 52px 0 44px; }
+
+.eyebrow {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.page-title {
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin-bottom: 18px;
+}
+.page-title em { font-style: normal; color: var(--accent); }
+
+.page-lead {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 640px;
+}
+.page-lead a { color: var(--muted2); text-decoration: none; border-bottom: 1px solid var(--border2); }
+.page-lead a:hover { color: var(--text); }
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, var(--border2) 0%, transparent 100%);
+  margin: 36px 0;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────── */
+.btn {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 48px;
+  padding: 0 32px;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,255,255,0.14); }
+.btn-primary:active { transform: scale(0.97); box-shadow: none; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--muted2);
+  border: 1px solid var(--border2);
+}
+.btn-outline:hover { color: var(--text); border-color: var(--muted); }
+
+/* ── Stepper (numeric +/- control) ────────────────────────────────── */
+.controls { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+.ctrl-block { display: flex; flex-direction: column; gap: 8px; }
+.ctrl-label {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+  height: 48px;
+}
+.step-btn {
+  width: 48px; height: 48px;
+  background: none;
+  border: none;
+  color: var(--muted2);
+  font-size: 22px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-btn:hover { color: var(--accent); background: rgba(255,255,255,0.06); }
+.step-val {
+  width: 52px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  line-height: 48px;
+  user-select: none;
+}
+
+/* ── Filter panel (checkbox groups) ───────────────────────────────── */
+.filter-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 1.4rem 0 0.8rem; }
+.filter-group { display: flex; flex-direction: column; gap: 0.3rem; min-width: 150px; }
+.filter-label {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.toggle-all {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  margin: 2px 0 6px;
+  text-align: left;
+}
+.toggle-all:hover { opacity: 1; }
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12.5px;
+  color: var(--muted2);
+  padding: 4px 0;
+}
+.check-item input {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+.check-box {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border2);
+  border-radius: 5px;
+  flex-shrink: 0;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+}
+.check-item input:checked + .check-box { background: var(--accent); border-color: var(--accent); }
+.check-item input:checked + .check-box::after {
+  content: '';
+  position: absolute;
+  left: 5px; top: 1px;
+  width: 5px; height: 10px;
+  border: solid var(--accent-ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.check-item:hover .check-box { border-color: var(--muted); }
+
+.form-error {
+  display: none;
+  color: #ff6b6b;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Category legend chips ────────────────────────────────────────── */
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.4rem 0 0.5rem; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem 0.3rem 0.55rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,0.55);
+  border: 1.5px solid currentColor;
+}
+.chip .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: currentColor; }
+
+/* ── Result box (generator output sentence) ───────────────────────── */
+.result-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.6rem 2rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  min-height: 4rem;
+  margin: 1.8rem 0 1rem;
+  display: none;
+}
+.result-box.visible { display: block; }
+
+/* ── Small stat cards (per-category breakdown) ────────────────────── */
+.stat-cards { display: none; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.2rem; }
+.stat-cards.visible { display: flex; }
+.stat-card {
+  flex: 1 1 140px;
+  min-width: 130px;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  background: rgba(0,0,0,0.55);
+  border: 1.5px solid currentColor;
+}
+.stat-card .stat-label {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 4px;
+}
+.stat-card .stat-value { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 1rem; font-weight: 700; color: currentColor; }
+.stat-card .stat-sub { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; color: var(--muted2); margin-top: 3px; }
+
+/* ── Cards (tool listing, exercise grids, etc.) ────────────────────── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+  animation: fadeUp 0.32s ease both;
+}
+.card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+.card-link { text-decoration: none; color: inherit; display: block; }
+
+.card-body { padding: 22px 24px 24px; }
+.card-tag {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.01em; }
+.card p { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; line-height: 1.7; color: var(--muted2); }
+.card .arrow { float: right; opacity: 0.4; font-size: 1.3rem; margin-top: -0.1rem; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+.site-footer {
+  margin-top: 80px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.site-footer a { color: var(--muted2); text-decoration: none; }
+.site-footer a:hover { color: var(--text); }
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .page-title { font-size: 2.4rem; }
+  .controls { gap: 12px; }
+  .btn { padding: 0 22px; }
+  .card-grid { grid-template-columns: 1fr; }
+}

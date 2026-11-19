@@ -5,170 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Drawing Warmup</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg: #1e1e26;
-  --surface: #26262e;
-  --surface2: #2c2c38;
-  --border: #36363e;
-  --border2: #42424e;
-  --accent: #c8893a;
+  --accent: #f2a93c;
   --accent2: #b8c442;
   --accent3: #47c4ff;
   --accent4: #c49dff;
-  --text: #e8e7e0;
-  --muted: #7a7a84;
-  --muted2: #a0a0ae;
-  --card: #222230;
 }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
-}
-
-.wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 100px; position: relative; z-index: 1; }
-
-header { padding: 52px 0 44px; }
-
-.header-eyebrow {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
-
-h1 {
-  font-size: clamp(2.6rem, 7vw, 5rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.025em;
-  margin-bottom: 18px;
-}
-h1 em { font-style: normal; color: var(--accent); }
-
-.header-meta {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.75;
-}
-.header-meta a { color: var(--muted2); text-decoration: none; border-bottom: 1px solid var(--border2); }
-.header-meta a:hover { color: var(--text); }
-
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, var(--border2) 0%, transparent 100%);
-  margin: 36px 0;
-}
-
-.controls {
-  display: flex;
-  align-items: flex-end;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 48px;
-}
-
-.ctrl-block { display: flex; flex-direction: column; gap: 8px; }
-
-.ctrl-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.stepper {
-  display: flex;
-  align-items: center;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  overflow: hidden;
-  height: 48px;
-}
-
-.step-btn {
-  width: 48px; height: 48px;
-  background: none;
-  border: none;
-  color: var(--muted2);
-  font-size: 22px;
-  font-family: 'Montserrat', sans-serif;
-  cursor: pointer;
-  transition: color 0.15s, background 0.15s;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.step-btn:hover { color: var(--accent); background: rgba(212,255,71,0.07); }
-
-.step-val {
-  width: 52px;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--accent);
-  border-left: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  line-height: 48px;
-  user-select: none;
-}
-
-.roll-btn {
-  height: 48px;
-  padding: 0 40px;
-  background: var(--accent);
-  color: #0d0d0f;
-  border: none;
-  border-radius: 10px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 1rem;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  white-space: nowrap;
-}
-.roll-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,255,71,0.22); }
-.roll-btn:active { transform: translateY(0); box-shadow: none; }
-
-.all-btn {
-  height: 48px;
-  padding: 0 24px;
-  background: transparent;
-  color: var(--muted2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-  white-space: nowrap;
-}
-.all-btn:hover { color: var(--text); border-color: var(--muted); }
 
 #results { display: none; }
 #results.on { display: block; }
@@ -182,13 +27,13 @@ h1 em { font-style: normal; color: var(--accent); }
 }
 .results-hdr h2 { font-size: 1rem; font-weight: 800; letter-spacing: 0.04em; }
 .results-tag {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 11px;
   color: var(--muted);
 }
 .reroll-link {
   margin-left: auto;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 11px;
   color: var(--accent);
   cursor: pointer;
@@ -203,21 +48,6 @@ h1 em { font-style: normal; color: var(--accent); }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   gap: 18px;
-}
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  animation: fadeUp 0.32s ease both;
-  transition: border-color 0.2s, transform 0.2s;
-}
-.card:hover { border-color: var(--border2); transform: translateY(-2px); }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .card-visual {
@@ -236,7 +66,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .level-badge {
   position: absolute;
   top: 12px; left: 12px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 9.5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -244,7 +74,7 @@ h1 em { font-style: normal; color: var(--accent); }
   border-radius: 5px;
   font-weight: 700;
 }
-.lv1 { background: rgba(212,255,71,0.12); color: var(--accent); }
+.lv1 { background: rgba(242,169,60,0.14); color: var(--accent); }
 .lv2 { background: rgba(71,196,255,0.12); color: var(--accent3); }
 .lv3 { background: rgba(255,107,53,0.12); color: var(--accent2); }
 .lv4 { background: rgba(196,157,255,0.12); color: var(--accent4); }
@@ -252,7 +82,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .ex-num {
   position: absolute;
   bottom: 12px; right: 14px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 11px;
   color: var(--muted);
 }
@@ -267,7 +97,7 @@ h1 em { font-style: normal; color: var(--accent); }
 }
 
 .card-desc {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 11.5px;
   line-height: 1.75;
   color: var(--muted2);
@@ -276,10 +106,10 @@ h1 em { font-style: normal; color: var(--accent); }
 .card-tip {
   margin-top: 14px;
   padding: 10px 14px;
-  background: rgba(212,255,71,0.05);
+  background: rgba(242,169,60,0.06);
   border-left: 2px solid var(--accent);
   border-radius: 0 6px 6px 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 10.5px;
   color: var(--muted2);
   line-height: 1.65;
@@ -301,7 +131,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .level-section { margin-bottom: 44px; }
 
 .level-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -351,7 +181,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .list-body { padding: 16px 18px 20px; }
 
 .list-num {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 10px;
   color: var(--muted);
   margin-bottom: 4px;
@@ -363,7 +193,7 @@ h1 em { font-style: normal; color: var(--accent); }
   letter-spacing: 0.01em;
 }
 .list-desc {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 11px;
   color: var(--muted2);
   line-height: 1.7;
@@ -376,7 +206,7 @@ h1 em { font-style: normal; color: var(--accent); }
   margin-bottom: 10px;
 }
 .list-train-tag {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 10px;
   padding: 3px 8px;
   border-radius: 4px;
@@ -385,35 +215,17 @@ h1 em { font-style: normal; color: var(--accent); }
   border: 1px solid var(--border2);
 }
 .list-note {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 10.5px;
   color: var(--muted2);
   line-height: 1.6;
   padding: 8px 12px;
-  background: rgba(212,255,71,0.04);
+  background: rgba(242,169,60,0.05);
   border-left: 2px solid var(--border2);
   border-radius: 0 5px 5px 0;
 }
 
-footer {
-  margin-top: 80px;
-  border-top: 1px solid var(--border);
-  padding-top: 24px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 11px;
-  color: var(--muted);
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-footer a { color: var(--muted2); text-decoration: none; }
-footer a:hover { color: var(--text); }
-
 @media (max-width: 600px) {
-  h1 { font-size: 2.4rem; }
-  .controls { gap: 12px; }
-  .roll-btn { padding: 0 24px; }
   .grid { grid-template-columns: 1fr; }
   .list-grid { grid-template-columns: 1fr; }
 }
@@ -422,14 +234,15 @@ footer a:hover { color: var(--text); }
 <body>
 <div class="wrap">
 
-<header>
-  <a href="../index.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;margin-bottom:28px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Art Toolset Home</a>
-  <div class="header-eyebrow">Drawing Practice Tool</div>
-  <h1>Drawing<em>Warmup</em></h1>
-  <div class="header-meta">
+<a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+<header class="tool-header">
+  <div class="eyebrow">Drawing Practice Tool</div>
+  <h1 class="page-title">Drawing<em>Warmup</em></h1>
+  <p class="page-lead">
     20 exercises from&nbsp;<a href="https://youtu.be/AyN8RawHIJQ" target="_blank" rel="noopener">"The only drawing exercise video you will ever need"</a><br>
     4 difficulty levels &mdash; Roll and practice before every drawing session.
-  </div>
+  </p>
 </header>
 
 <div class="controls">
@@ -441,8 +254,8 @@ footer a:hover { color: var(--text); }
       <button class="step-btn" id="inc" aria-label="more">+</button>
     </div>
   </div>
-  <button class="roll-btn" id="roll-btn">&#x21AF; Roll</button>
-  <button class="all-btn" id="toggle-all">All exercises</button>
+  <button class="btn btn-primary" id="roll-btn">&#x21AF; Roll</button>
+  <button class="btn btn-outline" id="toggle-all">All exercises</button>
 </div>
 
 <section id="results">
@@ -461,10 +274,10 @@ footer a:hover { color: var(--text); }
   <div id="all-list"></div>
 </section>
 
-<footer>
+<footer class="site-footer">
   <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
   <span>Source: <a href="https://youtu.be/AyN8RawHIJQ" target="_blank" rel="noopener">youtu.be/AyN8RawHIJQ</a></span>
-  <span style="margin-left:auto"><a href="../index.html">← Art Toolset Home</a></span>
+  <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
 </footer>
 
 </div>

@@ -1,103 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Art Toolset</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="cover.css">
-    <style>
-      .tool-card {
-        background: rgba(255,255,255,0.07);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-        transition: background 0.2s, border-color 0.2s;
-        text-decoration: none;
-        display: block;
-        color: #fff;
-      }
-      .tool-card:hover {
-        background: rgba(255,255,255,0.13);
-        border-color: rgba(255,255,255,0.35);
-        color: #fff;
-        text-decoration: none;
-      }
-      .tool-card .tool-tag {
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        opacity: 0.55;
-        margin-bottom: 0.4rem;
-      }
-      .tool-card h3 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.4rem;
-      }
-      .tool-card p {
-        margin: 0;
-        opacity: 0.7;
-        font-size: 0.95rem;
-      }
-      .tool-card .arrow {
-        float: right;
-        font-size: 1.5rem;
-        opacity: 0.4;
-        margin-top: -0.1rem;
-      }
-      .spicy-tag {
-        color: #F2B200;
-        opacity: 1 !important;
-      }
-    </style>
-  </head>
-<body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+  :root { --accent: #d4ff47; }
 
-<div class="cover-container d-flex w-100 h-200 p-3 mx-auto flex-column">
-  <header class="masthead mb-auto">
-    <div class="inner">
-      <h3 class="masthead-brand">Art Toolset</h3>
-    </div>
+  .tool-tag-warmup { color: #f2a93c; }
+  .tool-tag-generator { color: #b18cff; }
+  .tool-tag-spicy { color: #ff4d6d; }
+  .tool-tag-palette { color: #6ee7c4; }
+  .tool-tag-composition { color: #7fd4ff; }
+  .tool-tag-gesture { color: #ffd166; }
+  .tool-tag-extractor { color: #a8dfc4; }
+  .tool-tag-pose { color: #ff9ecb; }
+  .tool-tag-dice { color: #ff6b6b; }
+</style>
+</head>
+<body>
+<div class="wrap wrap-narrow">
+
+  <header class="tool-header">
+    <div class="eyebrow">Practice &amp; Prompt Tools</div>
+    <h1 class="page-title">Art<em>Toolset</em></h1>
+    <p class="page-lead">A growing set of small tools to warm up, spark ideas, and keep you drawing. Pick one below.</p>
   </header>
 
-  <main role="main" class="inner cover">
-    <h1 class="cover-heading">Tools for artists</h1>
-    <p class="lead">Pick a generator to spark your next illustration idea.</p>
+  <div class="card-grid" style="grid-template-columns: 1fr;">
 
-    <div style="max-width: 540px; margin-top: 2.5rem;">
-
-      <a href="drawing-warmup/drawing-warmp.html" class="tool-card">
-        <span class="arrow">→</span>
-        <div class="tool-tag warmup-tag">✏️ Drawing Warmup</div>
+    <a href="drawing-warmup/drawing-warmp.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-warmup">&#9999;&#65039; Drawing Warmup</div>
         <h3>Drawing Warmup Exercises</h3>
-        <p>20 structured exercises across 4 difficulty levels. Roll a random set before every drawing session. Inspired by Marc Brunet yt video.</p>
-      </a>
+        <p>20 structured exercises across 4 difficulty levels. Roll a random set before every drawing session. Inspired by a Marc Brunet YouTube video.</p>
+      </div>
+    </a>
 
-      <a href="generator.html" class="tool-card">
-        <span class="arrow">→</span>
-        <div class="tool-tag">Generator</div>
-        <h3>Random Character & Story Generator</h3>
+    <a href="generator/generator.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-generator">Generator</div>
+        <h3>Random Character &amp; Story Generator</h3>
         <p>Roll a character, an action, and a place to get a quick illustration prompt.</p>
-      </a>
+      </div>
+    </a>
 
-      <a href="spicy-generator.html" class="tool-card">
-        <span class="arrow">→</span>
-        <div class="tool-tag spicy-tag">🔥 Spicy Generator</div>
-        <h3>SPICY Random Character & Story Generator</h3>
-        <p>Six erotic-inspirational categories — mood, tone, archetype, action, kink, and setting — rolled into one prompt sentence.</p>
-      </a>
+    <a href="spicy-generator/spicy-generator.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-spicy">&#128293; Spicy Generator</div>
+        <h3>SPICY Random Character &amp; Story Generator</h3>
+        <p>Six erotic-inspirational categories &mdash; mood, tone, archetype, action, kink, and setting &mdash; rolled into one prompt sentence.</p>
+      </div>
+    </a>
 
-    </div>
-  </main>
+    <a href="palette-roller/palette-roller.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-palette">Palette Roller</div>
+        <h3>Palette Roller</h3>
+        <p>Roll a random color palette with harmony modes (monochrome, complementary, triadic, and more) for a limited-palette study.</p>
+      </div>
+    </a>
 
-  <footer class="mastfoot mt-auto">
-    <div class="inner">
-      <p>App made by <a href="https://beacons.ai/deear">Deear Art</a>.</p>
-    </div>
+    <a href="composition-randomizer/composition-randomizer.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-composition">Composition Roller</div>
+        <h3>Composition Randomizer</h3>
+        <p>Rolls a camera angle, shot type, and framing rule, then marks a focal point on a 3&times;3 grid.</p>
+      </div>
+    </a>
+
+    <a href="gesture-timer/gesture-timer.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-gesture">&#9201;&#65039; Gesture Timer</div>
+        <h3>Gesture Timer</h3>
+        <p>Load your own reference photos and cycle through them on a countdown for timed gesture-drawing practice.</p>
+      </div>
+    </a>
+
+    <a href="palette-extractor/palette-extractor.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-extractor">Palette Extractor</div>
+        <h3>Palette Extractor</h3>
+        <p>Drop in an image and pull out its dominant colors as a ready-to-use palette.</p>
+      </div>
+    </a>
+
+    <a href="pose-roller/pose-roller.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-pose">Pose Roller</div>
+        <h3>Pose &amp; Anatomy Roller</h3>
+        <p>Rolls a pose type, viewing angle, and anatomy focus to target in your next study.</p>
+      </div>
+    </a>
+
+    <a href="art-challenge-dice/art-challenge-dice.html" class="card card-link">
+      <div class="card-body">
+        <span class="arrow">&rarr;</span>
+        <div class="card-tag tool-tag-dice">&#127922; Art Challenge Dice</div>
+        <h3>Art Challenge Dice</h3>
+        <p>Rolls a familiar genre clich&eacute; and a twist directive that dares you to subvert it.</p>
+      </div>
+    </a>
+
+  </div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
   </footer>
 </div>
-
 </body>
 </html>

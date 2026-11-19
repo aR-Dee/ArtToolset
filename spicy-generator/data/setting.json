@@ -1,0 +1,137 @@
+[
+  {
+    "name": "Bedroom",
+    "inSentence": "the bedroom",
+    "sub": "Classic, intimate"
+  },
+  {
+    "name": "Dungeon",
+    "inSentence": "a dungeon",
+    "sub": "Dark, BDSM, fantasy"
+  },
+  {
+    "name": "Hot Spring",
+    "inSentence": "a hot spring",
+    "sub": "Relaxing, natural, sensual"
+  },
+  {
+    "name": "Wilderness",
+    "inSentence": "the wilderness",
+    "sub": "Forest, beach, or campsite"
+  },
+  {
+    "name": "Classroom",
+    "inSentence": "a classroom",
+    "sub": "Authority and power dynamic"
+  },
+  {
+    "name": "Office",
+    "inSentence": "an office",
+    "sub": "Professional tension after hours"
+  },
+  {
+    "name": "VIP Lounge",
+    "inSentence": "a VIP lounge",
+    "sub": "Exclusive, secretive, powerful"
+  },
+  {
+    "name": "Private Bath",
+    "inSentence": "a private bath",
+    "sub": "Luxurious, steam-filled, secluded"
+  },
+  {
+    "name": "Library",
+    "inSentence": "a library",
+    "sub": "Quiet corners and hidden alcoves"
+  },
+  {
+    "name": "Attic",
+    "inSentence": "an attic",
+    "sub": "Dusty, secret, stolen moments"
+  },
+  {
+    "name": "Loft",
+    "inSentence": "a loft",
+    "sub": "Open, warm light, exposed brickwork"
+  },
+  {
+    "name": "Altar",
+    "inSentence": "a ritual altar",
+    "sub": "Sacred, forbidden, charged with power"
+  },
+  {
+    "name": "Ritual Space",
+    "inSentence": "a ritual space",
+    "sub": "Candles, symbols, transgressive intent"
+  },
+  {
+    "name": "Tavern",
+    "inSentence": "a tavern",
+    "sub": "Classic fantasy \u2014 rowdy or private"
+  },
+  {
+    "name": "Inn",
+    "inSentence": "an inn",
+    "sub": "A rented room, far from home"
+  },
+  {
+    "name": "Public Space",
+    "inSentence": "a risky public spot",
+    "sub": "Park, elevator, alleyway, train\u2026"
+  },
+  {
+    "name": "Rooftop",
+    "inSentence": "a rooftop",
+    "sub": "Open sky, city lights, dizzying height"
+  },
+  {
+    "name": "Abandoned Place",
+    "inSentence": "an abandoned building",
+    "sub": "Decay, dust, and forbidden privacy"
+  },
+  {
+    "name": "Garden",
+    "inSentence": "a moonlit garden",
+    "sub": "Night air, blooms, hidden from view"
+  },
+  {
+    "name": "Castle",
+    "inSentence": "a castle",
+    "sub": "Nobility, stone walls, old power"
+  },
+  {
+    "name": "Onsen",
+    "inSentence": "an onsen",
+    "sub": "Traditional Japanese hot bath, secluded"
+  },
+  {
+    "name": "Balcony",
+    "inSentence": "a moonlit balcony",
+    "sub": "City lights, night air, close quarters"
+  },
+  {
+    "name": "Locker Room",
+    "inSentence": "a locker room",
+    "sub": "Post-practice heat, steam, and stolen glances"
+  },
+  {
+    "name": "Throne Room",
+    "inSentence": "a throne room",
+    "sub": "Power, ceremony, and command"
+  },
+  {
+    "name": "Greenhouse",
+    "inSentence": "a greenhouse",
+    "sub": "Humid, secluded, thick with green"
+  },
+  {
+    "name": "Backstage",
+    "inSentence": "a backstage dressing room",
+    "sub": "Adrenaline, mirrors, minutes before curtain"
+  },
+  {
+    "name": "Hotel Suite",
+    "inSentence": "a hotel suite",
+    "sub": "Anonymous, indulgent, away from home"
+  }
+]

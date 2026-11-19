@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pose &amp; Anatomy Roller &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root {
+    --accent: #ff9ecb;
+    --pose:  #ff9ecb;
+    --focus: #9ecbff;
+    --angle: #cbff9e;
+  }
+  .filter-label.lbl-pose  { color: var(--pose); }
+  .filter-label.lbl-focus { color: var(--focus); }
+  .filter-label.lbl-angle { color: var(--angle); }
+
+  .s-pose  { color: var(--pose);  font-weight: 700; }
+  .s-focus { color: var(--focus); font-weight: 700; }
+  .s-angle { color: var(--angle); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap wrap-narrow">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">Pose &amp; Anatomy Roller</div>
+    <h1 class="page-title">Pose<em> &amp; Anatomy</em> Roller</h1>
+    <p class="page-lead">Rolls a pose type, a viewing angle, and an anatomy focus to target in your next study. Uncheck anything you want to skip.</p>
+  </header>
+
+  <div class="form-error" id="checkbox-error">At least one option must be checked in each category.</div>
+
+  <button class="btn btn-primary" id="roll-btn">&#10024; SHUFFLE</button>
+
+  <div id="result-box" class="result-box"><div id="result-text"></div></div>
+
+  <div class="divider"></div>
+
+  <div class="filter-row">
+    <div class="filter-group">
+      <div class="filter-label lbl-pose">Pose Type</div>
+      <button class="toggle-all" data-group="pose_box">all / none</button>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Standing" checked><span class="check-box"></span> Standing</label>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Sitting" checked><span class="check-box"></span> Sitting</label>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Lying down" checked><span class="check-box"></span> Lying down</label>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Dynamic action / mid-motion" checked><span class="check-box"></span> Dynamic action</label>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Crouching or crawling" checked><span class="check-box"></span> Crouching / crawling</label>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Mid-jump or falling" checked><span class="check-box"></span> Mid-jump / falling</label>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Leaning on something" checked><span class="check-box"></span> Leaning</label>
+      <label class="check-item"><input type="checkbox" class="pose_box" value="Group pose (2+ figures interacting)" checked><span class="check-box"></span> Group pose</label>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label lbl-angle">Viewing Angle</div>
+      <button class="toggle-all" data-group="angle_box">all / none</button>
+      <label class="check-item"><input type="checkbox" class="angle_box" value="front view" checked><span class="check-box"></span> Front view</label>
+      <label class="check-item"><input type="checkbox" class="angle_box" value="3/4 view" checked><span class="check-box"></span> 3/4 view</label>
+      <label class="check-item"><input type="checkbox" class="angle_box" value="profile view" checked><span class="check-box"></span> Profile</label>
+      <label class="check-item"><input type="checkbox" class="angle_box" value="back view" checked><span class="check-box"></span> Back view</label>
+      <label class="check-item"><input type="checkbox" class="angle_box" value="from above" checked><span class="check-box"></span> From above</label>
+      <label class="check-item"><input type="checkbox" class="angle_box" value="from below" checked><span class="check-box"></span> From below</label>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label lbl-focus">Anatomy Focus</div>
+      <button class="toggle-all" data-group="focus_box">all / none</button>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="hands" checked><span class="check-box"></span> Hands</label>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="feet" checked><span class="check-box"></span> Feet</label>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="foreshortening" checked><span class="check-box"></span> Foreshortening</label>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="torso twist / spine curve" checked><span class="check-box"></span> Torso twist</label>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="weight shift / contrapposto" checked><span class="check-box"></span> Weight shift</label>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="drapery / fabric folds" checked><span class="check-box"></span> Drapery / folds</label>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="facial expression" checked><span class="check-box"></span> Facial expression</label>
+      <label class="check-item"><input type="checkbox" class="focus_box" value="muscle tension" checked><span class="check-box"></span> Muscle tension</label>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  function checkedValues(cls) {
+    return Array.from(document.querySelectorAll('input.' + cls + ':checked')).map(function (el) { return el.value; });
+  }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function roll() {
+    var poses = checkedValues('pose_box');
+    var angles = checkedValues('angle_box');
+    var focuses = checkedValues('focus_box');
+
+    var err = document.getElementById('checkbox-error');
+    if (!poses.length || !angles.length || !focuses.length) {
+      err.style.display = 'block';
+      return;
+    }
+    err.style.display = 'none';
+
+    var pose = pick(poses), angle = pick(angles), focus = pick(focuses);
+    var html = 'Draw a <span class="s-pose">' + pose + '</span> pose, ' +
+      '<span class="s-angle">' + angle + '</span>, ' +
+      'focusing on <span class="s-focus">' + focus + '</span>.';
+
+    document.getElementById('result-text').innerHTML = html;
+    document.getElementById('result-box').classList.add('visible');
+  }
+
+  document.getElementById('roll-btn').addEventListener('click', roll);
+  document.querySelectorAll('.toggle-all').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var boxes = document.querySelectorAll('input.' + btn.dataset.group);
+      var allChecked = Array.from(boxes).every(function (b) { return b.checked; });
+      boxes.forEach(function (b) { b.checked = !allChecked; });
+    });
+  });
+
+  roll();
+})();
+</script>
+</body>
+</html>

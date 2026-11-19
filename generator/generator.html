@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Character &amp; Story Generator &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root {
+    --accent: #b18cff;
+    --character: #C9B8F0;
+    --action:    #FFE08A;
+    --place:     #A8DFC4;
+  }
+
+  .filter-label.lbl-character { color: var(--character); }
+  .filter-label.lbl-action    { color: var(--action); }
+  .filter-label.lbl-place     { color: var(--place); }
+
+  .s-character { color: var(--character); font-weight: 700; }
+  .s-action    { color: var(--action);    font-weight: 700; }
+  .s-place     { color: var(--place);     font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">Story Generator</div>
+    <h1 class="page-title">Character<em> &amp; Story</em> Generator</h1>
+    <p class="page-lead">Pick your categories, hit the button, repeat until it feels right :)</p>
+  </header>
+
+  <div class="form-error" id="checkbox-error">At least one option must be checked in each category.</div>
+
+  <button class="btn btn-primary randomizer-btn">&#10024; SHUFFLE</button>
+
+  <div id="result-box" class="result-box"><div class="generated-story"></div></div>
+
+  <div class="divider"></div>
+
+  <div class="filter-row">
+    <div class="filter-group">
+      <div class="filter-label lbl-character">Character</div>
+      <button class="toggle-all" data-group="char_box">all / none</button>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.generic" checked>
+        <span class="check-box"></span> Generic
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.game" checked>
+        <span class="check-box"></span> Games
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.anime" checked>
+        <span class="check-box"></span> Anime / Manga
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.comic" checked>
+        <span class="check-box"></span> Comics
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.mythology" checked>
+        <span class="check-box"></span> Mythology
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.historical" checked>
+        <span class="check-box"></span> Historical
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.sci-fi" checked>
+        <span class="check-box"></span> Sci-Fi
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.work" checked>
+        <span class="check-box"></span> Work
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.animal-folk" checked>
+        <span class="check-box"></span> Animal-folk
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.horror" checked>
+        <span class="check-box"></span> Horror
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.medieval" checked>
+        <span class="check-box"></span> Medieval
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.fantasy" checked>
+        <span class="check-box"></span> Fantasy
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.modern" checked>
+        <span class="check-box"></span> Modern
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.school" checked>
+        <span class="check-box"></span> School
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.sports" checked>
+        <span class="check-box"></span> Sports
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.seasonal" checked>
+        <span class="check-box"></span> Seasonal
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.nature" checked>
+        <span class="check-box"></span> Nature
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.urban" checked>
+        <span class="check-box"></span> Urban
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="char_box" value="character.underwater" checked>
+        <span class="check-box"></span> Underwater
+      </label>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label lbl-action">Action</div>
+      <button class="toggle-all" data-group="action_box">all / none</button>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.generic" checked>
+        <span class="check-box"></span> Generic
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.game" checked>
+        <span class="check-box"></span> Games
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.anime" checked>
+        <span class="check-box"></span> Anime / Manga
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.comic" checked>
+        <span class="check-box"></span> Comics
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.mythology" checked>
+        <span class="check-box"></span> Mythology
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.historical" checked>
+        <span class="check-box"></span> Historical
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.sci-fi" checked>
+        <span class="check-box"></span> Sci-Fi
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.work" checked>
+        <span class="check-box"></span> Work
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.animal-folk" checked>
+        <span class="check-box"></span> Animal-folk
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.horror" checked>
+        <span class="check-box"></span> Horror
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.medieval" checked>
+        <span class="check-box"></span> Medieval
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.fantasy" checked>
+        <span class="check-box"></span> Fantasy
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.modern" checked>
+        <span class="check-box"></span> Modern
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.school" checked>
+        <span class="check-box"></span> School
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.sports" checked>
+        <span class="check-box"></span> Sports
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.seasonal" checked>
+        <span class="check-box"></span> Seasonal
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.nature" checked>
+        <span class="check-box"></span> Nature
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.urban" checked>
+        <span class="check-box"></span> Urban
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="action_box" value="action.underwater" checked>
+        <span class="check-box"></span> Underwater
+      </label>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label lbl-place">Place</div>
+      <button class="toggle-all" data-group="place_box">all / none</button>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.generic" checked>
+        <span class="check-box"></span> Generic
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.game" checked>
+        <span class="check-box"></span> Games
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.anime" checked>
+        <span class="check-box"></span> Anime / Manga
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.comic" checked>
+        <span class="check-box"></span> Comics
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.mythology" checked>
+        <span class="check-box"></span> Mythology
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.historical" checked>
+        <span class="check-box"></span> Historical
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.sci-fi" checked>
+        <span class="check-box"></span> Sci-Fi
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.work" checked>
+        <span class="check-box"></span> Work
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.animal-folk" checked>
+        <span class="check-box"></span> Animal-folk
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.horror" checked>
+        <span class="check-box"></span> Horror
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.medieval" checked>
+        <span class="check-box"></span> Medieval
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.fantasy" checked>
+        <span class="check-box"></span> Fantasy
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.modern" checked>
+        <span class="check-box"></span> Modern
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.school" checked>
+        <span class="check-box"></span> School
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.sports" checked>
+        <span class="check-box"></span> Sports
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.seasonal" checked>
+        <span class="check-box"></span> Seasonal
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.nature" checked>
+        <span class="check-box"></span> Nature
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.urban" checked>
+        <span class="check-box"></span> Urban
+      </label>
+      <label class="check-item">
+        <input type="checkbox" class="place_box" value="place.underwater" checked>
+        <span class="check-box"></span> Underwater
+      </label>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span>Inspired by <a href="https://www.instagram.com/p/CH5rtOfDdN9/" target="_blank" rel="noopener">ChrissaBug</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script src="randomizer.js"></script>
+<script>
+  // Toggle all / none per group
+  document.querySelectorAll('.toggle-all').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var boxes = document.querySelectorAll('input.' + btn.dataset.group);
+      var allChecked = Array.from(boxes).every(function(b) { return b.checked; });
+      boxes.forEach(function(b) { b.checked = !allChecked; });
+    });
+  });
+</script>
+</body>
+</html>

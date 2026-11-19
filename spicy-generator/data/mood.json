@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Wholesome",
+    "sub": "Comforting, kind"
+  },
+  {
+    "name": "Playful",
+    "sub": "Energetic, fun"
+  },
+  {
+    "name": "Romantic",
+    "sub": "Loving, affectionate"
+  },
+  {
+    "name": "Confident",
+    "sub": "Self-assured, flirtatious"
+  },
+  {
+    "name": "Surprised",
+    "sub": "Astonished, caught off guard"
+  },
+  {
+    "name": "Shy",
+    "sub": "Timid, bashful"
+  },
+  {
+    "name": "Innocent",
+    "sub": "Pure, naive, unaware"
+  },
+  {
+    "name": "Melancholic",
+    "sub": "Wistful, bittersweet longing"
+  },
+  {
+    "name": "Desperate",
+    "sub": "Urgent, hungry, breathless need"
+  },
+  {
+    "name": "Dominant",
+    "sub": "Commanding, in control"
+  },
+  {
+    "name": "Submissive",
+    "sub": "Yielding, obedient, eager to please"
+  },
+  {
+    "name": "Mischievous",
+    "sub": "Cheeky, scheming, a little dangerous"
+  },
+  {
+    "name": "Dreamy",
+    "sub": "Hazy, otherworldly, half-lost"
+  },
+  {
+    "name": "Anxious",
+    "sub": "Nervous, on edge, heart racing"
+  },
+  {
+    "name": "Jealous",
+    "sub": "Possessive, wanting sole attention"
+  },
+  {
+    "name": "Adoring",
+    "sub": "Starstruck, worshipful, smitten"
+  },
+  {
+    "name": "Vulnerable",
+    "sub": "Exposed, trusting, guard down"
+  },
+  {
+    "name": "Sultry",
+    "sub": "Slow-burning, smoky, magnetic"
+  },
+  {
+    "name": "Curious",
+    "sub": "Exploring, testing limits"
+  },
+  {
+    "name": "Overwhelmed",
+    "sub": "Swept up, senses in overload"
+  },
+  {
+    "name": "Needy",
+    "sub": "Craving closeness, can't get enough"
+  }
+]

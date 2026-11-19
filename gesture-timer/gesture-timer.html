@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gesture Timer &ndash; Art Toolset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  :root { --accent: #ffd166; }
+
+  .dropzone {
+    border: 2px dashed var(--border2);
+    border-radius: 14px;
+    padding: 2.4rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: var(--muted2);
+    transition: border-color .15s, background .15s;
+    margin: 1.5rem 0;
+  }
+  .dropzone:hover, .dropzone.drag { border-color: var(--accent); background: rgba(255,209,102,0.08); }
+  .dropzone input { display: none; }
+  .dropzone .big { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .dropzone .small { font-size: 12px; }
+
+  .time-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.6rem 0 1.6rem; }
+  .time-chip {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    color: var(--muted2);
+    cursor: pointer;
+  }
+  .time-chip:hover { color: var(--text); border-color: var(--muted); }
+  .time-chip.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  .stage {
+    display: none;
+    position: relative;
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    aspect-ratio: 16 / 10;
+    margin: 1.2rem 0;
+  }
+  .stage.visible { display: flex; align-items: center; justify-content: center; }
+  .stage img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .ring-wrap { position: absolute; top: 14px; right: 14px; width: 56px; height: 56px; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: rgba(255,255,255,0.18); stroke-width: 5; }
+  .ring-fg { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 0.2s linear; }
+  .ring-text {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 800; color: #fff;
+  }
+
+  .counter {
+    position: absolute; bottom: 14px; left: 14px;
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+    color: #fff; background: rgba(0,0,0,0.55); padding: 5px 10px; border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+
+  .transport { display: none; gap: 12px; margin: 1.2rem 0; flex-wrap: wrap; }
+  .transport.visible { display: flex; }
+</style>
+</head>
+<body>
+<div class="wrap wrap-narrow">
+
+  <a href="../index.html" class="back-link">&larr; Art Toolset Home</a>
+
+  <header class="tool-header">
+    <div class="eyebrow">Gesture Timer</div>
+    <h1 class="page-title">Gesture<em> Timer</em></h1>
+    <p class="page-lead">Load your own reference photos and cycle through them on a countdown &mdash; classic gesture-drawing practice. Everything stays in your browser; nothing is uploaded anywhere.</p>
+  </header>
+
+  <label class="dropzone" id="dropzone">
+    <input type="file" id="file-input" accept="image/*" multiple>
+    <div class="big">Click to choose images, or drag &amp; drop them here</div>
+    <div class="small">JPG / PNG / WebP &middot; processed locally in your browser</div>
+  </label>
+
+  <div class="ctrl-label" style="margin-bottom:8px;">Time per pose</div>
+  <div class="time-row" id="time-row">
+    <button class="time-chip" data-sec="30">30 sec</button>
+    <button class="time-chip active" data-sec="60">1 min</button>
+    <button class="time-chip" data-sec="120">2 min</button>
+    <button class="time-chip" data-sec="300">5 min</button>
+  </div>
+
+  <button class="btn btn-primary" id="start-btn" disabled>&#9654; START SESSION</button>
+
+  <div class="stage" id="stage">
+    <img id="stage-img" alt="reference">
+    <div class="counter" id="counter">1 / 1</div>
+    <div class="ring-wrap">
+      <svg width="56" height="56">
+        <circle class="ring-bg" cx="28" cy="28" r="24"></circle>
+        <circle class="ring-fg" id="ring-fg" cx="28" cy="28" r="24"></circle>
+      </svg>
+      <div class="ring-text" id="ring-text">60</div>
+    </div>
+  </div>
+
+  <div class="transport" id="transport">
+    <button class="btn btn-outline" id="pause-btn">&#10074;&#10074; PAUSE</button>
+    <button class="btn btn-outline" id="skip-btn">&#9193; SKIP</button>
+    <button class="btn btn-outline" id="shuffle-btn">&#128256; RESHUFFLE</button>
+    <button class="btn btn-outline" id="stop-btn">&#9632; STOP</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <footer class="site-footer">
+    <span>App made by <a href="https://beacons.ai/deear" target="_blank" rel="noopener">Deear Art</a>.</span>
+    <span style="margin-left:auto"><a href="../index.html">&larr; Art Toolset Home</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var images = [];       // object URLs
+  var order = [];
+  var idx = 0;
+  var seconds = 60;
+  var remaining = seconds;
+  var timerId = null;
+  var paused = false;
+  var R = 24, CIRC = 2 * Math.PI * R;
+
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('file-input');
+  var startBtn = document.getElementById('start-btn');
+  var stage = document.getElementById('stage');
+  var stageImg = document.getElementById('stage-img');
+  var transport = document.getElementById('transport');
+  var ringFg = document.getElementById('ring-fg');
+  var ringText = document.getElementById('ring-text');
+  var counter = document.getElementById('counter');
+  var timeRow = document.getElementById('time-row');
+
+  ringFg.setAttribute('stroke-dasharray', CIRC);
+
+  // Note: dropzone is a <label> wrapping the hidden <input>, so clicking
+  // anywhere inside it already opens the file picker natively — no extra
+  // click-forwarding needed here (that would open the dialog twice).
+  ['dragover', 'dragenter'].forEach(function (ev) {
+    dropzone.addEventListener(ev, function (e) { e.preventDefault(); dropzone.classList.add('drag'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropzone.addEventListener(ev, function (e) { e.preventDefault(); dropzone.classList.remove('drag'); });
+  });
+  dropzone.addEventListener('drop', function (e) {
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', function () { handleFiles(fileInput.files); });
+
+  function handleFiles(fileList) {
+    var files = Array.from(fileList).filter(function (f) { return f.type.indexOf('image/') === 0; });
+    if (!files.length) return;
+    // Release any previously loaded images before replacing the set.
+    images.forEach(function (url) { URL.revokeObjectURL(url); });
+    images = files.map(function (f) { return URL.createObjectURL(f); });
+    startBtn.disabled = false;
+    startBtn.textContent = '▶ START SESSION (' + images.length + ' image' + (images.length > 1 ? 's' : '') + ')';
+  }
+
+  timeRow.addEventListener('click', function (e) {
+    var btn = e.target.closest('.time-chip');
+    if (!btn) return;
+    timeRow.querySelectorAll('.time-chip').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    seconds = parseInt(btn.dataset.sec, 10);
+  });
+
+  function shuffleOrder() {
+    order = images.map(function (_, i) { return i; });
+    for (var i = order.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = order[i]; order[i] = order[j]; order[j] = t;
+    }
+  }
+
+  function showCurrent() {
+    stageImg.src = images[order[idx]];
+    counter.textContent = (idx + 1) + ' / ' + order.length;
+  }
+
+  function tick() {
+    if (paused) return;
+    remaining -= 0.1;
+    if (remaining <= 0) {
+      next();
+      return;
+    }
+    updateRing();
+  }
+
+  function updateRing() {
+    var frac = Math.max(0, remaining / seconds);
+    ringFg.setAttribute('stroke-dashoffset', CIRC * (1 - frac));
+    ringText.textContent = Math.ceil(remaining);
+  }
+
+  function next() {
+    idx = (idx + 1) % order.length;
+    remaining = seconds;
+    showCurrent();
+    updateRing();
+  }
+
+  function startSession() {
+    if (!images.length) return;
+    shuffleOrder();
+    idx = 0;
+    remaining = seconds;
+    stage.classList.add('visible');
+    transport.classList.add('visible');
+    showCurrent();
+    updateRing();
+    paused = false;
+    document.getElementById('pause-btn').innerHTML = '❙❙ PAUSE';
+    if (timerId) clearInterval(timerId);
+    timerId = setInterval(tick, 100);
+  }
+
+  function stopSession() {
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+    stage.classList.remove('visible');
+    transport.classList.remove('visible');
+  }
+
+  startBtn.addEventListener('click', startSession);
+  document.getElementById('skip-btn').addEventListener('click', next);
+  document.getElementById('stop-btn').addEventListener('click', stopSession);
+  document.getElementById('shuffle-btn').addEventListener('click', function () {
+    shuffleOrder();
+    idx = 0;
+    remaining = seconds;
+    showCurrent();
+    updateRing();
+  });
+  document.getElementById('pause-btn').addEventListener('click', function (e) {
+    paused = !paused;
+    e.currentTarget.innerHTML = paused ? '▶ RESUME' : '❙❙ PAUSE';
+  });
+})();
+</script>
+</body>
+</html>
